@@ -1,0 +1,73 @@
+.loading:before {
+	content:url(../web/images/loading.gif);
+	background-size:contain;
+}
+
+#room-list {
+	min-height:100px;
+}
+
+#drawing-canvas {
+	width:500px;
+	height:500px;
+	border:1px solid black;
+}
+
+.room-item {
+	border: 1px solid black;
+	border-radius: 5px;
+	padding:10px;
+}
+
+.game-item {
+	border: 1px solid black;
+	border-radius: 5px;
+	padding:10px;
+	float:left;
+	width:230px;
+}
+
+#canvas-bar {
+	position:relative;
+}
+
+#tools {
+	position:absolute;
+	left:0;
+}
+
+#ok-draw {
+	position:absolute;
+	right:0;
+}
+
+#drawing-name , #drawing-title {
+	font-size:24px;
+	vertical-align: middle;
+}
+
+.game-list {
+	border: 1px solid gray;
+    min-height: 100px;
+}
+
+#drawing-list {
+	width:650px;
+	margin:0 auto;
+	display:block;
+}
+
+.drawing , .guessing{
+	border: 1px solid gray;
+	border-radius:10px;
+	padding:5px;
+}
+
+.drawing img {
+	border: 1px solid lightgray;
+}
+
+.drawing .user {
+	width:135px;
+	display:inline-block;
+}

@@ -1,0 +1,212 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>画话相传</title>
+  <meta name="description" content="">
+  <script src="src/libs/modernizr-2.5.3.min.js"></script>
+  <style>
+    	body, html { 
+				margin: 0; 
+				padding: 0;
+				overflow: auto; 
+				font-family: Arial; 
+				font-size: 20px;
+				display: inline;
+			}
+    	#main { 
+				margin: 0 auto;
+			}
+    </style>
+</head>
+<body>
+  <!--[if lt IE 8]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <!-- Add your site or application content here -->
+
+  <script src="src/libs/jquery-2.0.3.min.js"></script>
+  <script src="src/libs/jquery.ui.touch-punch.min.js"></script>
+  <script src="src/libs/underscore-1.3.4.min.js"></script>
+  <script src="src/libs/backbone-min.js"></script>
+  <script src="src/libs/bootstrap.min.js"></script>
+  <script src="src/libs/firebase.js"></script>
+  <script src="src/libs/backbone-firebase.js"></script>
+  <script src="src/libs/sea.js"></script>
+  <link href="css/bootstrap.css" rel='stylesheet'/>
+  <link href="css/main.css" rel='stylesheet'/>
+
+  <script type="text/javascript">
+  if ( !console ) {
+	console = {
+		log : function(){}
+	}
+  }
+
+  seajs.config({
+	  base: "./src/libs/",
+	  preload: ['seajs-text']
+  })
+
+  // 加载入口模块
+  seajs.use("./test/testbench");
+  </script>
+  <!-- end scripts -->
+  </div>
+  <!-- Setup google analytics -->
+  <!--script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script-->
+
+  <div id="main" class='container'>
+	<div id='lobby'></div>
+	<div id='room'></div>
+	<div id='game'></div>
+  </div>
+  
+  <div class="modal fade" id="login-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">登录</h4>
+        </div>
+        <div class="modal-body">
+           <div class="input-group">
+			  <span class="input-group-addon glyphicon glyphicon-user"></span>
+			  <input type="text" class="form-control" placeholder="用户名" id='user-name'/>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" id='login'>登录</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</body>
+
+<script type="template" id='lobby-template'>
+<div>
+	<label>房间列表</label>
+	<div id='room-list' class='loading'>
+	</div>
+	<span><input id='room-name'/><button id='create-room' class='btn btn-default'>新建房间</button></span>
+	<div>
+		<label>我的房间列表</label>
+		<div id='my-room-list' class='loading'>
+		</div>
+	</div>
+</div>
+</script>
+
+<script type="template" id='room-item-template'>
+<div class='room-item'><label class='room-item-name'>房间：<%=name%></label> <label>创建人：<%=users.get(ownerId).get("name")%></label><div>
+</script>
+
+<script type="template" id='room-template'>
+<div>
+	<span><label>房间：</label><label id='room-name'><%=room.name%></label></span>
+	<label>创建人：</label><label id='owner-name'><%=owner.name%></label>
+	<span><button type="button" class='btn btn-default' id='join-room'>加入</button><button type="button" class='btn btn-default' id='leave-room'>离开</button><button type="button" class='btn btn-danger' id='close-room'>关闭房间</button><button type="button" class='btn btn-default' id='to-lobby'>返回大厅</button></span>
+	<label>玩家列表</label>
+	<div id='setting'>
+		<span><label>接力达几人后结束：</label>
+		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
+			<option value="4">4人</option>
+			<option value="5">5人</option>
+			<option value="6">6人</option>
+			<option value="7">7人</option>
+			<option value="8">8人</option>
+			<option value="9">9人</option>
+			<option value="10">10人</option>
+			<option value="11">11人</option>
+			<option value="12">12人</option>
+			<option value="0">全员</option>
+		</select>
+		</span>
+		<span><label>画图时间限制：</label>
+		<select id='time-limit' class='form-control' style='display:inline; width:auto' >
+			<option value="30">30秒</option>
+			<option value="60">60秒</option>
+			<option value="90">90秒</option>
+			<option value="120">120秒</option>
+			<option value="0">无限制</option>
+		</select>
+		</button></span>
+	</div>
+	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
+	<div id='user-list'></div>
+	<ul class="nav nav-tabs" id='game-tabs'>
+	  <li class="active"><a href="#my-game-list" data-toggle="tab">我在接力的游戏</a></li>
+	  <li><a href="#game-list" data-toggle="tab">可供接力的游戏</a></li>
+	  <li><a href="#completed-game-list" data-toggle="tab">已完成的游戏</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane active fade " id="my-game-list"></div>
+		<div class="tab-pane fade " id="game-list"></div>
+		<div class="tab-pane fade " id="completed-game-list"></div>
+	</div>
+</div>
+</script>
+
+<script type="template" id='game-item-template'>
+<div class='game-item' id='<%=id%>'>
+	<label><%=(status=='close' && drawings.length>0)?drawings.at(0).get("word"):""%></label>
+	<label class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于 <%=(new Date(timestamp).toLocaleString())%></label>
+	<div><label>接力数：<%=_.size(drawings)-1%></label>
+	<br/>现在状态:<label><%=(status=="open"?"进行中":"完成")%></label></div>
+<div>
+</script>
+
+<script type="template" id='game-template'>
+<div>
+	<div style='margin:0 auto;width:500px;'>
+		<span class='user'>
+		</span>：
+		<label class='drawing-title'></label>
+	</div>
+	<div style='margin:0 auto;width:500px;height:500px;display:block'>
+		<canvas id='drawing-canvas' width='500' height='500' style='display:block;border:1px solid black;'/>
+		<div id='canvas-bar' style='display:none'>
+			<div id='tools' class="btn-group" data-toggle="buttons">
+			  <label class="btn btn-primary" id="pen1" pen="1">
+				<input type="radio" name="options">画笔1
+			  </label>
+			  <label class="btn btn-primary active" id="pen3" pen="3">
+				<input type="radio" name="options">画笔2
+			  </label>
+			  <label class="btn btn-primary" id="pen5" pen="5">
+				<input type="radio" name="options">画笔3
+			  </label>
+			  <label class="btn btn-primary" id="rubber5">
+				<input type="radio" name="options">橡皮
+			  </label>
+			</div>
+			<button id='ok-draw' class='btn btn-primary'>确定</button>
+		</div>
+		<div id='drawing-to-guess' style='display:none;border:1px solid black;width:500px;height:500px'/>
+	</div>
+	<div id='drawing-guess' style='display:none;margin:10px auto;width:500px'>
+		<span>
+			<label>猜猜这是啥？</label>
+			<input id='drawing-name'/>
+			<button id='ok-guess' class='btn btn-primary' type='button'>确定</button>
+		</span>
+	</div>
+</div>
+
+</script>
+
+<script type="template" id='completed-game-template'>
+<div id='drawing-list' style=''>
+</div>
+</script>
+
+</html>
