@@ -120,7 +120,7 @@ define(function(require, exports, module) {
 					success: function(){
 						var status = "open"
 						var userLimit = self.options.room.model.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= self.options.room.model.get("userIds").length ) {
+						if ( userLimit == 0 && self.drawings.length - 1>= _.size(self.options.room.model.get("userIds")) ) {
 							if ( self.drawings.length > 4 )	{
 								status = "close";
 							}
@@ -158,7 +158,7 @@ define(function(require, exports, module) {
 					success: function(){
 						var status = "open"
 						var userLimit = self.options.room.model.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= self.options.room.model.get("userIds").length ) {
+						if ( userLimit == 0 && self.drawings.length - 1>= _.size(self.options.room.model.get("userIds")) ) {
 							if ( self.drawings.length > 4 )	{
 								status = "close";
 							}
