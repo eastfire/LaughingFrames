@@ -60,7 +60,11 @@ define(function(require, exports, module) {
 			this.games = this.model.getGames();
 			this.games.on('add', this.onAddGame, this);
 			this.games.on('reset', this.onResetGames);
-
+			
+			this.userIds = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
+			
+			this.renderUsers();
+			
 			this.games.each(function(game){
 				if ( game.get("ownerId") === currentUserId && game.get("status") === "open" )
 					this.ownOpenCount ++;
@@ -76,15 +80,23 @@ define(function(require, exports, module) {
 			
 			this.$("#game-tabs a:first").tab('show');
 		},
+		
+		renderUsers : function(){
+			this.$("#user-list").empty();
+			for ( var id in this.userIds ){
+				var user = window.users.get(id);
+				this.$("#user-list").append("<div class="user-item"><label>"+user.get("name")+"</label></div>")
+			}
+		},
 
 		onJoinRoom:function(){
-			var f = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
-			f.push({currentUser.get("id"):true});
+			this.userIds.push({currentUser.get("id"):true});
+			this.initialize();
 		},
 
 		onLeaveRoom:function(){
-			var f = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
-			f.push({currentUser.get("id"):false});
+			this.userIds.push({currentUser.get("id"):false});
+			this.initialize();
 		},
 		
 		onCloseRoom:function(){
