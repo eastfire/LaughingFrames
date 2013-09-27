@@ -170,19 +170,20 @@ define(function(require, exports, module) {
 		},
 
 		onAddGame:function(game){
-			if ( this.$("#game-list #"+game.get("id") ).length == 0){
-				if ( game.get("status") === 'open' ){
-					if ( game.get("currentUserId") == currentUser.get("id") )	{
-						var view = new GameItemView({model:game, roomView:this});
-						this.$("#my-game-list").prepend(view.render().$el);
-					} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUser.get("id")) ){
-						var view = new GameItemView({model:game, roomView:this});
-						this.$("#game-list").prepend(view.render().$el);
-					}
-				} else {
+			if ( this.$("#"+game.get("id") ).length != 0){
+				this.$("#"+game.get("id") ).remove();
+			
+			if ( game.get("status") === 'open' ){
+				if ( game.get("currentUserId") == currentUser.get("id") )	{
 					var view = new GameItemView({model:game, roomView:this});
-					this.$("#completed-game-list").prepend(view.render().$el);
+					this.$("#my-game-list").prepend(view.render().$el);
+				} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUser.get("id")) ){
+					var view = new GameItemView({model:game, roomView:this});
+					this.$("#game-list").prepend(view.render().$el);
 				}
+			} else {
+				var view = new GameItemView({model:game, roomView:this});
+				this.$("#completed-game-list").prepend(view.render().$el);
 			}
 		},
 		
