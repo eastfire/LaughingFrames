@@ -75,15 +75,16 @@ define(function(require, exports, module) {
 
 			
 			this.$("#game-tabs a:first").tab('show');
-			//TODO find a game for me
 		},
 
 		onJoinRoom:function(){
-
+			var f = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
+			f.push({currentUser.get("id"):true});
 		},
 
 		onLeaveRoom:function(){
-
+			var f = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
+			f.push({currentUser.get("id"):false});
 		},
 		
 		onCloseRoom:function(){
@@ -158,9 +159,6 @@ define(function(require, exports, module) {
 		},
 
 		refreshRoom: function(){
-			this.$("#my-game-list").empty();
-			this.$("#game-list").empty();
-			this.$("#completed-game-list").empty();
 			this.onResetGames();
 		},
 
@@ -188,6 +186,9 @@ define(function(require, exports, module) {
 		},
 		
 		onResetGames:function(){
+			this.$("#my-game-list").empty();
+			this.$("#game-list").empty();
+			this.$("#completed-game-list").empty();
 			this.games.each( this.onAddGame, this);
 		}
 	});
