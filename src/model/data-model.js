@@ -24,7 +24,7 @@ define(function(require, exports, module) {
 			return {
 				name:"",
 				ownerId:0,
-				userIds:[],
+				userIds:{}
 				status : "open", //open, close
 				passcode : null,
 
@@ -36,11 +36,7 @@ define(function(require, exports, module) {
 		},
 		
 		hasUser:function(id){
-			for ( var i = 0 ; i < this.get("userIds").length ; i++)	{
-				if ( this.get("userIds")[i] === id )
-					return true;
-			}
-			return false;
+			return this.get("userIds")[id];
 		},
 
 		getGames:function(){
