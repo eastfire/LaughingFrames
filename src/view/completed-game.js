@@ -5,7 +5,7 @@ define(function(require, exports, module) {
 		template: _.template(comletedGameTemplate),
 
 		events: {
-
+			"click #back-to-room":"backToRoom"
 		},
 
 		initialize:function(){
@@ -24,7 +24,7 @@ define(function(require, exports, module) {
 					var el = $("<div class='guessing'><div><span class='user'></span><span><label>"+word+"<label></span></div><div class='comment-list'></div></div>");
 					this.drawingList.append(el);
 				} else {
-					var el = $("<div class='drawing'><div><span class='user'></span><span><img src='"+drawing.get("pic")+"'/></span></div><div class='comment-list'></div></div>");
+					var el = $("<div class='drawing'><div><span class='user'></span><span><img src='"+drawing.get("pic")+"'/></span></div><div>吐槽</div><div class='comment-list'></div></div>");
 					this.drawingList.append(el);
 				}
 				var user = users.get(drawing.get("ownerId"));

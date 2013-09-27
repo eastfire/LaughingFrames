@@ -19,7 +19,8 @@ define(function(require, exports, module) {
 			var el = $("<div></div>").appendTo($("#room"));
 			var view = new RoomView({
 				model: this.model,
-				el: el
+				el: el,
+				lobby: this.options.lobby
 			});
 		}
 	});
@@ -48,7 +49,7 @@ define(function(require, exports, module) {
 		onAddOneRoom : function(room){
 			this.$("#room-list").removeClass("loading");
 			this.$("#my-room-list").removeClass("loading");
-			var view = new RoomItemView({model:room});
+			var view = new RoomItemView({model:room, lobby:this});
 			if ( room.hasUser(currentUser.get("id")) ){
 				this.$("#my-room-list").prepend(view.render().$el);
 			} else {
@@ -65,6 +66,10 @@ define(function(require, exports, module) {
 		initLayout:function(){
 			var self = this;
 			this.$el.html( this.template() );
+		},
+		
+		refresh: function(){
+			this.onAddAllRooms();
 		},
 		
 		onCreate: function(event){

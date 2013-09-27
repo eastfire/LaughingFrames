@@ -83,19 +83,19 @@ define(function(require, exports, module) {
 		
 		renderUsers : function(){
 			this.$("#user-list").empty();
-			for ( var id in this.userIds ){
+			for ( var id in this.model.get("userIds") ){
 				var user = window.users.get(id);
-				this.$("#user-list").append("<div class="user-item"><label>"+user.get("name")+"</label></div>")
+				this.$("#user-list").append("<div class='user-item'><label>"+user.get("name")+"</label></div>");
 			}
 		},
 
 		onJoinRoom:function(){
-			this.userIds.push({currentUser.get("id"):true});
+			this.userIds.child(currentUser.get("id")).set(true);
 			this.initialize();
 		},
 
 		onLeaveRoom:function(){
-			this.userIds.push({currentUser.get("id"):false});
+			this.userIds.child(currentUser.get("id")).remove();
 			this.initialize();
 		},
 		
@@ -115,7 +115,8 @@ define(function(require, exports, module) {
 		onCreateGame: function(event){
 			if ( this.ownOpenCount >= 0 ){
 				$(event.currentTarget).popover({
-					content: "由于资源有限，每个玩家创建且未完成的游戏只能有3个。请耐心等待其他玩家接力完成。"
+					content: "由于资源有限，每个玩家创建且未完成的游戏只能有3个。请耐心等待其他玩家接力完成。",
+					delay: { show: 3000, hide: 100 },
 				});
 				return;
 			}
@@ -136,6 +137,9 @@ define(function(require, exports, module) {
 		},
 		
 		enterGame: function(game){
+			if ( game.get("status") == "open" && !this.model.hasUser(currentUser.get("id")) ){
+				return;
+			}
 			var self = this;
 			game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
 				if ( id != 0 ){
@@ -176,11 +180,12 @@ define(function(require, exports, module) {
 
 		onBackToLobby:function(){
 			$("#lobby").show();
+			this.options.lobby.refresh();
 			this.remove();
 		},
 
 		onAddGame:function(game){
-			if ( this.$("#"+game.get("id") ).length != 0){
+			if ( this.$("#"+game.get("id") ).length != 0)
 				this.$("#"+game.get("id") ).remove();
 			
 			if ( game.get("status") === 'open' ){

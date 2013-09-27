@@ -16,7 +16,7 @@ define(function(require, exports, module) {
 		"扑克牌","仆人","苹果","泡面","炮弹","排球","葡萄","乒乓球","拍卖会","披萨", //p
 		"清洁工","企鹅","青蛙","骑士","巧克力","钱包","汽车", //q
 		"忍者","人造卫星","热水器","热气球",//r
-		"水手","税收","水坝","薯条","沙漠","鼠标","手雷","算盘","杀手","手枪","鲨鱼", //s
+		"水手","税收","水坝","薯条","沙漠","鼠标","手雷","算盘","杀手","手枪","鲨鱼","三明治", //s
 		"天鹅","鸵鸟","铁钉","天使","台球","跳舞","太阳","头发","铁路","田野", //t
 		"乌贼","无线网络","王子","王后","舞厅","温度计","乌龟","网球","武士","蚊子", //w
 		"熊猫","星座","香蕉","芯片","小偷","修理工","象棋","心脏","犀牛","蜥蜴", //x
@@ -36,7 +36,9 @@ define(function(require, exports, module) {
 			"click #ok-guess":"onCompleteGuess",
 			"mousedown #drawing-canvas.enabled":"onDraw",
 			"mousemove #drawing-canvas.enabled":"onDraw",
-			"mouseup #drawing-canvas.enabled":"onDraw"
+			"mouseup #drawing-canvas.enabled":"onDraw",
+			"click #ok-guess":"onCompleteGuess",
+			"click #back-to-room":"backToRoom"
 		},
 
 		initialize:function(){

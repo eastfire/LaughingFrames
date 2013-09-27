@@ -46,6 +46,17 @@
 	vertical-align: middle;
 }
 
+#user-list {
+	border:1px solid gray;
+	min-height:50px;
+	padding:10px;
+}
+
+.user-item {
+	float: left;
+	margin:5px;
+}
+
 .game-list {
 	border: 1px solid gray;
     min-height: 100px;

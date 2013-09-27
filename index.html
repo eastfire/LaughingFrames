@@ -142,7 +142,12 @@
 		</button></span>
 	</div>
 	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
-	<div id='user-list'></div>
+	
+	<p>
+		<label>玩家</label>
+		<div id='user-list'></div>
+	</p>
+
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class="active"><a href="#my-game-list" data-toggle="tab">我在接力的游戏</a></li>
 	  <li><a href="#game-list" data-toggle="tab">可供接力的游戏</a></li>
@@ -167,6 +172,7 @@
 
 <script type="template" id='game-template'>
 <div>
+	<button id='back-to-room' class='btn btn-primary' type='button'>回到房间</button>
 	<div style='margin:0 auto;width:500px;'>
 		<span class='user'>
 		</span>：
@@ -205,6 +211,7 @@
 </script>
 
 <script type="template" id='completed-game-template'>
+<button id='back-to-room' class='btn btn-primary' type='button'>回到房间</button>
 <div id='drawing-list' style=''>
 </div>
 </script>
