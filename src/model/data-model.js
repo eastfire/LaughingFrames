@@ -69,6 +69,8 @@ define(function(require, exports, module) {
 		},
 
 		hasUser:function(id){
+			if ( id == this.get("ownerId") )
+				return true;
 			for ( var key in this.get("drawings") )	{
 				var d = this.get("drawings")[key];
 				if ( d.question )
@@ -93,7 +95,12 @@ define(function(require, exports, module) {
 				comments: {},
 				timestamp : 0
 			};
-		}
+		},
+		getComments:function(){
+			if ( !this._comments )
+				this._comments = new exports.Comments([],{firebase: this.collection.firebase.child("/"+this.get("id")+"/comments")});
+			return this._comments;
+		},
 	})
 	
 	exports.Drawings = Backbone.Firebase.Collection.extend({
@@ -105,7 +112,7 @@ define(function(require, exports, module) {
 			return {
 				userId: 0,
 				content: "",
-				time : 0
+				timestamp : 0
 			};
 		}
 	})

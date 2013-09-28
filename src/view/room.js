@@ -1,4 +1,7 @@
 define(function(require, exports, module) {
+	window.CREATE_GAME_LIMIT = 3;
+	window.ACTIVE_GAME_LIMIT = 3;
+
 	var roomTemplate = $("#room-template").html();
 	var gameItemTemplate = $("#game-item-template").html();
 	var GameView = require("./game").GameView;
@@ -13,6 +16,11 @@ define(function(require, exports, module) {
 
 		initialize:function(){
 			this.$el.html( this.template(this.model.toJSON()) );
+			if ( this.model.get("status")=='close' ) {
+				var drawings = this.model.getDrawings();
+				if ( drawings.length>0)
+					this.$(".game-title").html( drawings.at(0).get("word") );
+			}
 		},
 		
 		onEnter:function(){
@@ -57,6 +65,8 @@ define(function(require, exports, module) {
 			}
 
 			this.ownOpenCount = 0;
+			this.activeOpenCount = 0;
+
 			this.games = this.model.getGames();
 			this.games.on('add', this.onAddGame, this);
 			this.games.on('reset', this.onResetGames);
@@ -66,8 +76,13 @@ define(function(require, exports, module) {
 			this.renderUsers();
 			
 			this.games.each(function(game){
-				if ( game.get("ownerId") === currentUserId && game.get("status") === "open" )
-					this.ownOpenCount ++;
+				if ( game.get("status") === "open" ) {
+					if ( game.get("ownerId") === currentUserId )
+						this.ownOpenCount ++;
+					else if ( game.get("currentUserId") === currentUserId )
+						this.activeOpenCount ++;
+				}
+				
 			},this);
 
 			this.onResetGames();
@@ -113,21 +128,22 @@ define(function(require, exports, module) {
 		},
 
 		onCreateGame: function(event){
-			if ( this.ownOpenCount >= 0 ){
-				$(event.currentTarget).popover({
-					content: "由于资源有限，每个玩家创建且未完成的游戏只能有3个。请耐心等待其他玩家接力完成。",
-					delay: { show: 3000, hide: 100 },
-				});
-				return;
-			}
 			var self = this;
 			var b = $(event.currentTarget);
+			if ( this.ownOpenCount >= CREATE_GAME_LIMIT ){
+				b.popover({
+					content: "由于资源有限，每个玩家创建且未完成的游戏只能有3个。请耐心等待其他玩家接力完成或接力其他玩家创建的游戏。",
+				}).popover("show");
+				setTimeout(function(){
+					b.popover("hide");
+				},3000);
+				return;
+			}
+			
 			b.attr("disabled","disabled").addClass("loading");
 
-			this.games.create({ownerId: currentUser.get("id"), timestamp: (new Date()).getTime(), currentUserId : currentUser.get("id") },{
-				success:function(game){
-					//enter game
-					self.enterGame( game );
+			this.games.add({ownerId: currentUser.get("id"), timestamp: (new Date()).getTime(), currentUserId : currentUser.get("id") },{
+				success:function(){
 					b.removeAttr("disabled").removeClass("loading");
 				},
 				error:function(){
@@ -140,15 +156,29 @@ define(function(require, exports, module) {
 			if ( game.get("status") == "open" && !this.model.hasUser(currentUser.get("id")) ){
 				return;
 			}
+			if ( game.get("currentUserId") != currentUser.get("id") && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
+				var el = this.$("#"+game.get("id"));
+				el.popover({
+					content: "请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
+				}).popover("show");
+				setTimeout(function(){
+					el.popover("hide");
+				},3000);
+				return;
+			}
 			var self = this;
 			game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
 				if ( id != 0 ){
+					console.log(" 1 return id:"+id);
 					return id
 				}
-				if ( game.hasUser(currentUser.get("id")) ){
+				var currentUserId = currentUser.get("id");
+				if ( game.hasUser(currentUserId) ){
+					console.log(" 2 return id:"+id);
 					return id;
 				}
-				return currentUser.get("id");
+				console.log("3 return id:"+id);
+				return currentUserId;
 			}, function(error, committed, snapshot) {
 				if ( committed ){
 					$("#room").hide();
@@ -192,6 +222,9 @@ define(function(require, exports, module) {
 				if ( game.get("currentUserId") == currentUser.get("id") )	{
 					var view = new GameItemView({model:game, roomView:this});
 					this.$("#my-game-list").prepend(view.render().$el);
+					if ( _.size(game.get("drawings")) ==0 ){
+						this.enterGame( game );
+					}
 				} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUser.get("id")) ){
 					var view = new GameItemView({model:game, roomView:this});
 					this.$("#game-list").prepend(view.render().$el);

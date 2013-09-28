@@ -78,7 +78,7 @@ define(function(require, exports, module) {
 			if ( name != ""){
 				var b = $(event.currentTarget);
 				b.attr("disabled","disabled").addClass("loading");
-				this.rooms.add({name: name, ownerId: currentUser.get("id"), userIds:[currentUser.get("id")] }, {
+				this.rooms.add({timestamp:(new Date()).getTime(), name: name, ownerId: currentUser.get("id"), userIds:[currentUser.get("id")] }, {
 					success:function(){
 						self.$("#room-name").val("")
 						b.removeAttr("disabled").removeClass("loading");

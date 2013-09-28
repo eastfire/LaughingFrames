@@ -17,6 +17,8 @@
 	border: 1px solid black;
 	border-radius: 5px;
 	padding:10px;
+	float: left;
+    width: 250px;
 }
 
 .game-item {
@@ -62,16 +64,27 @@
     min-height: 100px;
 }
 
+#drawing-to-guess {
+	border:1px solid black;
+	width:500px;
+	height:500px;
+}
+#drawing-guess {
+	margin:10px auto;
+	width:500px
+}
+
 #drawing-list {
 	width:650px;
 	margin:0 auto;
 	display:block;
 }
 
-.drawing , .guessing{
+.drawing{
 	border: 1px solid gray;
 	border-radius:10px;
-	padding:5px;
+	padding:5px 5px 20px 5px;
+	position:relative;
 }
 
 .drawing img {
@@ -81,4 +94,14 @@
 .drawing .user {
 	width:135px;
 	display:inline-block;
+}
+
+.comments {
+	position:absolute;
+	right:20px;
+}
+
+.comment-list {
+	margin-top:25px;
+	margin-left: 50px;
 }
