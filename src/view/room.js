@@ -50,6 +50,7 @@ define(function(require, exports, module) {
 			this.$el.html( this.template({room:this.model.toJSON(), owner: owner.toJSON() }) );
 			this.$("#user-limit").prop("selectedIndex", this.$("#user-limit option[value="+this.model.get("userLimit")+"]").index() );
 			this.$("#time-limit").prop("selectedIndex", this.$("#time-limit option[value="+this.model.get("timeLimit")+"]").index() );
+			var isVisitor = false;
 			if ( currentUserId == this.model.get("ownerId") )	{
 				this.$("#join-room").hide();
 				this.$("#leave-room").hide();
@@ -66,6 +67,7 @@ define(function(require, exports, module) {
 				this.$("#close-room").hide();
 				this.$("#user-limit").attr("disabled","disabled");
 				this.$("#time-limit").attr("disabled","disabled");
+				isVisitor = true;
 			}
 
 			this.ownOpenCount = 0;
@@ -96,15 +98,19 @@ define(function(require, exports, module) {
 				$(this).tab('show')
 			})
 */
-			
-			this.$("#game-tabs a:first").tab('show');
+			if ( isVisitor ){
+				this.$("#game-tabs li:first").hide();
+				this.$("#game-tabs li:nth-child(2)").hide();
+				$('#game-tabs li:nth-child(3) a').tab('show')
+			}
 		},
 		
 		renderUsers : function(){
 			this.$("#user-list").empty();
 			for ( var id in this.model.get("userIds") ){
 				var user = window.users.get(id);
-				this.$("#user-list").append("<div class='user-item'><label>"+user.get("name")+"</label></div>");
+				if ( user )
+					this.$("#user-list").append("<div class='user-item'><label>"+user.get("name")+"</label></div>");
 			}
 		},
 
@@ -180,7 +186,7 @@ define(function(require, exports, module) {
 					console.log(" 2 return id:"+id);
 					return id;
 				}
-				console.log("3 return id:"+id);
+				console.log("3 return id:"+currentUserId);
 				return currentUserId;
 			}, function(error, committed, snapshot) {
 				if ( committed ){

@@ -52,7 +52,7 @@ define(function(require, exports, module) {
 			this.rooms.on('reset', this.onAddAllRooms);
 			this.rooms.on('all', this.render);
 
-			this.$("#room-tabs a:first").tab('show');
+			this.$("#room-tabs li:first a").tab('show');
 		},
 
 		onAddOneRoom : function(room){

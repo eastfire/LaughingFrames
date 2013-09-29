@@ -31,7 +31,9 @@ define(function(require, exports, module) {
 					this.drawingList.append(el);
 				}
 				var user = users.get(drawing.get("ownerId"));
-				el.find(".user").append("<div><label>"+user.get("name")+"<label><label>：</label></div><div>"+relative_time_text(drawing.get("timestamp"))+"</div>");
+				if ( user ) {
+					el.find(".user").append("<div><label>"+user.get("name")+"<label><label>：</label></div><div>"+relative_time_text(drawing.get("timestamp"))+"</div>");
+				}
 			}
 		},
 		
@@ -70,7 +72,9 @@ define(function(require, exports, module) {
 			for ( var i = 0 ; i < comments.length; i ++){
 				var comment = comments.at(i);
 				var user = users.get( comment.get("userId") );
-				list.prepend( "<div class='comment'><label class='comment-user'>"+user.get("name")+"</label>：<label class='comment-content'>"+comment.get("content")+" ("+relative_time_text(comment.get("timestamp"))+")</label></div>");
+				if ( user )	{
+					list.prepend( "<div class='comment'><label class='comment-user'>"+user.get("name")+"</label>：<label class='comment-content'>"+comment.get("content")+" ("+relative_time_text(comment.get("timestamp"))+")</label></div>");
+				}
 			}
 		},
 
