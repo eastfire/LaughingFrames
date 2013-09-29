@@ -45,7 +45,6 @@ define(function(require, exports, module) {
 			this.$el.html( this.template({room:this.model.toJSON(), owner: owner.toJSON() }) );
 			this.$("#user-limit").prop("selectedIndex", this.$("#user-limit option[value="+this.model.get("userLimit")+"]").index() );
 			this.$("#time-limit").prop("selectedIndex", this.$("#time-limit option[value="+this.model.get("timeLimit")+"]").index() );
-			var currentUserId = currentUser.get("id");
 			if ( currentUserId == this.model.get("ownerId") )	{
 				this.$("#join-room").hide();
 				this.$("#leave-room").hide();
@@ -105,12 +104,12 @@ define(function(require, exports, module) {
 		},
 
 		onJoinRoom:function(){
-			this.userIds.child(currentUser.get("id")).set(true);
+			this.userIds.child(currentUserId).set(true);
 			this.initialize();
 		},
 
 		onLeaveRoom:function(){
-			this.userIds.child(currentUser.get("id")).remove();
+			this.userIds.child(currentUserId).remove();
 			this.initialize();
 		},
 		
@@ -142,7 +141,7 @@ define(function(require, exports, module) {
 			
 			b.attr("disabled","disabled").addClass("loading");
 
-			this.games.add({ownerId: currentUser.get("id"), timestamp: (new Date()).getTime(), currentUserId : currentUser.get("id") },{
+			this.games.add({ownerId: currentUserId, timestamp: (new Date()).getTime(), currentUserId : currentUserId },{
 				success:function(){
 					b.removeAttr("disabled").removeClass("loading");
 				},
@@ -153,10 +152,10 @@ define(function(require, exports, module) {
 		},
 		
 		enterGame: function(game){
-			if ( game.get("status") == "open" && !this.model.hasUser(currentUser.get("id")) ){
+			if ( game.get("status") == "open" && !this.model.hasUser(currentUserId) ){
 				return;
 			}
-			if ( game.get("currentUserId") != currentUser.get("id") && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
+			if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
 				var el = this.$("#"+game.get("id"));
 				el.popover({
 					content: "请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
@@ -172,7 +171,6 @@ define(function(require, exports, module) {
 					console.log(" 1 return id:"+id);
 					return id
 				}
-				var currentUserId = currentUser.get("id");
 				if ( game.hasUser(currentUserId) ){
 					console.log(" 2 return id:"+id);
 					return id;
@@ -219,13 +217,13 @@ define(function(require, exports, module) {
 				this.$("#"+game.get("id") ).remove();
 			
 			if ( game.get("status") === 'open' ){
-				if ( game.get("currentUserId") == currentUser.get("id") )	{
+				if ( game.get("currentUserId") == currentUserId )	{
 					var view = new GameItemView({model:game, roomView:this});
 					this.$("#my-game-list").prepend(view.render().$el);
 					if ( _.size(game.get("drawings")) ==0 ){
 						this.enterGame( game );
 					}
-				} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUser.get("id")) ){
+				} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUserId) ){
 					var view = new GameItemView({model:game, roomView:this});
 					this.$("#game-list").prepend(view.render().$el);
 				}
