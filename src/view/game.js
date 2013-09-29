@@ -53,7 +53,7 @@ define(function(require, exports, module) {
 				//if no frame , new a question
 				if ( this.drawings.length == 0 ){
 					this.drawings.add({
-						ownerId: currentUser.get("id"),
+						ownerId: currentUserId,
 						timestamp : this.model.get("timestamp"),
 						word: "题目："+this.randomWord(),
 						question: true
@@ -117,7 +117,7 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUser.get("id"), timestamp: (new Date()).getTime(), pic: this.canvas[0].toDataURL() },
+			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), pic: this.canvas[0].toDataURL() },
 				{ 
 					success: function(){
 						var status = "open"
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUser.get("id"), timestamp: (new Date()).getTime(), word: name },
+			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), word: name },
 				{ 
 					success: function(){
 						var status = "open"
