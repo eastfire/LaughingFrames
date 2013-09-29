@@ -20,7 +20,7 @@ define(function(require, exports, module) {
 						var main = new MainView({
 							el : $("#lobby"),
 						});
-						window.currentUserId = currentUser.get("id");
+						window.currentUserId = name;
 					},
 					error:function(){
 					}
