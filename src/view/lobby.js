@@ -1,4 +1,5 @@
 define(function(require, exports, module) {
+	window.USER_LIMIT_ROOM = 1;
 	var lobbyTemplate = $("#lobby-template").html();
 	var roomItemTemplate = $("#room-item-template").html();
 	var RoomView = require("./room").RoomView;
@@ -50,7 +51,9 @@ define(function(require, exports, module) {
 			this.$("#room-list").removeClass("loading");
 			this.$("#my-room-list").removeClass("loading");
 			var view = new RoomItemView({model:room, lobby:this});
-			if ( room.hasUser(currentUser.get("id")) ){
+			if ( room.get("ownerId") == currentUserId )
+				this.ownCount++;
+			if ( room.hasUser(currentUserId) ){
 				this.$("#my-room-list").prepend(view.render().$el);
 			} else {
 				this.$("#room-list").prepend(view.render().$el);
@@ -60,6 +63,7 @@ define(function(require, exports, module) {
 		onAddAllRooms : function(){			
 			this.$("#room-list").empty();
 			this.$("#my-room-list").empty();
+			this.ownCount = 0;
 			this.rooms.each( this.onAddOneRoom, this);
 		},
 
@@ -73,12 +77,22 @@ define(function(require, exports, module) {
 		},
 		
 		onCreate: function(event){
+			if ( this.ownCount >= USER_LIMIT_ROOM ) {
+				$(event.currentTarget).popover({
+					content:"由于资源限制，每个玩家只能创建"+UESR_LIMIT_ROOM+"个房间"
+				}).popover("show");
+				setTimeout(function(){
+					$(event.currentTarget).popover("hide");
+				})
+				return;
+			}
+			
 			var self = this;
 			var name = this.$("#room-name").val().trim();
 			if ( name != ""){
 				var b = $(event.currentTarget);
 				b.attr("disabled","disabled").addClass("loading");
-				this.rooms.add({timestamp:(new Date()).getTime(), name: name, ownerId: currentUser.get("id"), userIds:[currentUser.get("id")] }, {
+				this.rooms.add({timestamp:(new Date()).getTime(), name: name, ownerId: currentUserId, userIds:[currentUserId] }, {
 					success:function(){
 						self.$("#room-name").val("")
 						b.removeAttr("disabled").removeClass("loading");
