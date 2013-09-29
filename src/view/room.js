@@ -168,7 +168,7 @@ define(function(require, exports, module) {
 			}
 			var self = this;
 			game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
-				if ( id != 0 ){
+				if ( id != "" ){
 					console.log(" 1 return id:"+id);
 					return id
 				}
