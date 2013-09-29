@@ -16,11 +16,16 @@ define(function(require, exports, module) {
 
 		initialize:function(){
 			this.$el.html( this.template(this.model.toJSON()) );
-			if ( this.model.get("status")=='close' ) {
-				var drawings = this.model.getDrawings();
+			var drawings = this.model.getDrawings();
+			if ( this.model.get("status")=='close' ) {				
 				if ( drawings.length>0)
 					this.$(".game-title").html( drawings.at(0).get("word") );
 			}
+			var total = 0;
+			drawings.each(function(d){
+				total+=_.size(d.get("comments"));
+			});
+			this.$(".total-comments").html(total);
 		},
 		
 		onEnter:function(){
@@ -86,11 +91,11 @@ define(function(require, exports, module) {
 
 			this.onResetGames();
 
-			$('#myTab a').click(function (e) {
+		/*	$('#myTab a').click(function (e) {
 				e.preventDefault()
 				$(this).tab('show')
 			})
-
+*/
 			
 			this.$("#game-tabs a:first").tab('show');
 		},

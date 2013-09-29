@@ -55,7 +55,7 @@ define(function(require, exports, module) {
 					this.drawings.add({
 						ownerId: currentUserId,
 						timestamp : this.model.get("timestamp"),
-						word: "题目："+this.randomWord(),
+						word: this.randomWord(),
 						question: true
 					});
 				}

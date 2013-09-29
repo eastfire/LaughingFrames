@@ -14,17 +14,27 @@ define(function(require, exports, module) {
 		var login = function(){
 			var name = $("#login-dialog #user-name").val();
 			if ( name )	{
-				window.currentUser = window.users.add({id:name, name: name}, {
-					success : function(){
-						$("#login-dialog").modal("hide");
-						var main = new MainView({
-							el : $("#lobby"),
-						});
-						window.currentUserId = name;
-					},
-					error:function(){
-					}
-				});
+				window.currentUser = window.users.get(name);
+				if ( window.currentUser == null ){
+					window.users.add({id:name, name: name}, {
+						success : function(){
+							$("#login-dialog").modal("hide");
+							var main = new MainView({
+								el : $("#lobby"),
+							});
+							window.currentUser = window.users.get(name);
+							window.currentUserId = currentUser.get("id");
+						},
+						error:function(){
+						}
+					});
+				} else {
+					window.currentUserId = currentUser.get("id");
+					$("#login-dialog").modal("hide");
+					var main = new MainView({
+						el : $("#lobby"),
+					});
+				}
 			}
 		};
 		$("#login-dialog #user-name").on("keyup", function(event){

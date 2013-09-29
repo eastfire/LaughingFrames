@@ -24,7 +24,7 @@ define(function(require, exports, module) {
 				var word = drawing.get("word");
 				var el
 				if ( word ){
-					var el = $("<div class='drawing guessing' id='"+drawing.get("id")+"'><div><span class='user'></span><span><label>"+word+"<label></span></div><label class='comments'>吐槽("+_.size(drawing.get("comments"))+")</label><div class='comment-list' style='display:none'></div></div>");
+					var el = $("<div class='drawing guessing' id='"+drawing.get("id")+"'><div><span class='user'></span><span class='word'><label>"+word+"<label></span></div><label class='comments'>吐槽("+_.size(drawing.get("comments"))+")</label><div class='comment-list' style='display:none'></div></div>");
 					this.drawingList.append(el);
 				} else {
 					var el = $("<div class='drawing' id='"+drawing.get("id")+"'><div><span class='user'></span><span><img src='"+drawing.get("pic")+"'/></span></div><label class='comments'>吐槽("+_.size(drawing.get("comments"))+")</label><div class='comment-list' style='display:none'></div></div>");

@@ -96,36 +96,52 @@
 
 <script type="template" id='lobby-template'>
 <div>
-	<label>房间列表</label>
-	<div id='room-list' class='loading'>
-	</div>
-	<span class='input-group'><input id='room-name' class='form-control' placeholder='房间名'/><span class='input-group-btn' id='create-room'><button class='btn btn-default'>新建房间</button></span></span>
-	<div>
-		<label>我的房间列表</label>
-		<div id='my-room-list' class='loading'>
+	<div class='row'>
+		<div class='input-group col-md-6'>
+			<input id='room-name' class='form-control' placeholder='房间名'/><span class='input-group-btn' id='create-room'><button class='btn btn-default'>新建房间</button></span>
 		</div>
 	</div>
+	<p>
+		<ul class="nav nav-tabs" id='room-tabs'>
+		  <li class="active"><a href="#my-room-list" data-toggle="tab">我的房间</a></li>	  
+		  <li><a href="#room-list" data-toggle="tab">可参加的房间</a></li>
+		  <li><a href="#closed-room-list" data-toggle="tab">已关闭的房间</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active loading" id="my-room-list"></div>
+			<div class="tab-pane loading" id="room-list"></div>
+			<div class="tab-pane " id="closed-room-list"></div>
+		</div>
+	</p>
 </div>
 </script>
 
 <script type="template" id='room-item-template'>
 <div class='room-item'>
-	<div>
-		<label class='room-item-name'>房间：<%=name%></label>
-		<label style='margin-left: 15px;'>创建人：<%=users.get(ownerId).get("name")%></label>
-	<div>
-	<label>创建于<%=relative_time_text(timestamp)%></label>
+	<div>房间：<label class='room-item-name'><%=name%></label></div>
+	<div>创建人：<label class='room-owner-name'><%=users.get(ownerId).get("name")%></label></div>
+	<div>创建于：<label class='room-create-time'><%=relative_time_text(timestamp)%></label></div>
+	<div>游戏数：<label class='room-game-number'><%=_.size(games)%></label></div>
 </div>
 </script>
 
 <script type="template" id='room-template'>
 <div>
-	<span><label>房间：</label><label id='room-name'><%=room.name%></label></span>
-	<label>创建人：</label><label id='owner-name'><%=owner.name%></label>
-	<span><button type="button" class='btn btn-default' id='join-room'>加入</button><button type="button" class='btn btn-default' id='leave-room'>离开</button><button type="button" class='btn btn-danger' id='close-room'>关闭房间</button><button type="button" class='btn btn-default' id='to-lobby'>返回大厅</button></span>
+	<div>
+		<span class='col-md-3'>房间：<label id='room-name'><%=room.name%></label></span>
+		<span class='col-md-3'>创建人：<label id='owner-name'><%=owner.name%></label></span>
+	</div>
+	<div>
+		<span>
+			<button type="button" class='btn btn-default' id='join-room'>加入</button>
+			<button type="button" class='btn btn-default' id='leave-room'>离开</button>
+			<button type="button" class='btn btn-danger' id='close-room'>关闭房间</button>
+			<button type="button" class='btn btn-default' id='to-lobby'>返回大厅</button>
+		</span>
+	</div>
 
-	<p id='setting'>
-		<label>规则：</label>
+	<div class='well-lg' id='setting'>
+		<div>规则：</div>
 		<span><label>接力达几人后结束：</label>
 		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
 			<option value="4">4人</option>
@@ -149,10 +165,10 @@
 			<option value="0">无限制</option>
 		</select>
 		</button></span>
-	</p>
+	</div>
 	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
-	
-	<p>
+
+
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class="active"><a href="#game-list" data-toggle="tab">可接力的游戏</a></li>
 	  <li><a href="#my-game-list" data-toggle="tab">我在接力的游戏</a></li>	  
@@ -160,21 +176,22 @@
 	  <li><a href="#user-list" data-toggle="tab">玩家</a></li>
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane fade " id="game-list"></div>
-		<div class="tab-pane active fade " id="my-game-list"></div>
+		<div class="tab-pane active fade " id="game-list"></div>
+		<div class="tab-pane fade " id="my-game-list"></div>
 		<div class="tab-pane fade " id="completed-game-list"></div>
 		<div class="tab-pane fade " id='user-list'></div>
 	</div>
-	</p>
+
 </div>
 </script>
 
 <script type="template" id='game-item-template'>
 <div class='game-item' id='<%=id%>'>
-	<label class='game-title'></label>
-	<label class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于 <%=relative_time_text(timestamp)%></label>
-	<div><label>接力数：<%=_.size(drawings)-1%></label>
-	<br/>现在状态:<label><%=(status=="open"?"进行中":"完成")%></label></div>
+	<div>题目：<label class='game-title'></label></div>
+	<div><label class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于 <%=relative_time_text(timestamp)%></label></div>
+	<div>接力数：<label><%=_.size(drawings)-1%></label></div>
+	<div>现在状态：<label><%=(status=="open"?"进行中":"完成")%></label></div>
+	<div>吐槽值：<label class='total-comments'></label></div>
 <div>
 </script>
 

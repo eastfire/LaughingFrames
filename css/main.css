@@ -96,6 +96,10 @@
 	display:inline-block;
 }
 
+.drawing .word {
+	vertical-align: top;
+}
+
 .comments {
 	position:absolute;
 	right:20px;

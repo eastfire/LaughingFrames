@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-	window.USER_LIMIT_ROOM = 1;
+	window.USER_LIMIT_ROOM = 2;
 	var lobbyTemplate = $("#lobby-template").html();
 	var roomItemTemplate = $("#room-item-template").html();
 	var RoomView = require("./room").RoomView;
@@ -13,6 +13,11 @@ define(function(require, exports, module) {
 
 		initialize:function(){
 			this.$el.html( this.template(this.model.toJSON()) );
+/*			$('#myTab a').click(function (e) {
+				e.preventDefault()
+				$(this).tab('show')
+			})
+*/
 		},
 		
 		onEnter:function(){
@@ -40,11 +45,14 @@ define(function(require, exports, module) {
 		
 		initData:function(){
 			var DataModel = require("../model/data-model");
+			this.ownCount = 0;
 			this.rooms = new DataModel.Rooms([],{firebase: myFirebase.child("/rooms")});
 			
 			this.rooms.on('add', this.onAddOneRoom, this);
 			this.rooms.on('reset', this.onAddAllRooms);
 			this.rooms.on('all', this.render);
+
+			this.$("#room-tabs a:first").tab('show');
 		},
 
 		onAddOneRoom : function(room){
@@ -63,7 +71,7 @@ define(function(require, exports, module) {
 		onAddAllRooms : function(){			
 			this.$("#room-list").empty();
 			this.$("#my-room-list").empty();
-			this.ownCount = 0;
+
 			this.rooms.each( this.onAddOneRoom, this);
 		},
 
@@ -79,11 +87,12 @@ define(function(require, exports, module) {
 		onCreate: function(event){
 			if ( this.ownCount >= USER_LIMIT_ROOM ) {
 				$(event.currentTarget).popover({
-					content:"由于资源限制，每个玩家只能创建"+UESR_LIMIT_ROOM+"个房间"
-				}).popover("show");
+					content:"由于资源有限，每个玩家只能创建"+USER_LIMIT_ROOM+"个房间"
+				});
+				$(event.currentTarget).popover("show");
 				setTimeout(function(){
 					$(event.currentTarget).popover("hide");
-				})
+				},3000)
 				return;
 			}
 			
