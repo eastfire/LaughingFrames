@@ -14,12 +14,13 @@ define(function(require, exports, module) {
 		var login = function(){
 			var name = $("#login-dialog #user-name").val();
 			if ( name )	{
-				window.currentUser = window.users.create({id:name, name: name}, {
+				window.currentUser = window.users.add({id:name, name: name}, {
 					success : function(){
 						$("#login-dialog").modal("hide");
-							var main = new MainView({
-								el : $("#lobby"),
-							});
+						var main = new MainView({
+							el : $("#lobby"),
+						});
+						window.currentUserId = currentUser.get("id");
 					},
 					error:function(){
 					}
