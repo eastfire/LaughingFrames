@@ -92,7 +92,9 @@ define(function(require, exports, module) {
 			if ( name != ""){
 				var b = $(event.currentTarget);
 				b.attr("disabled","disabled").addClass("loading");
-				this.rooms.add({timestamp:(new Date()).getTime(), name: name, ownerId: currentUserId, userIds:[currentUserId] }, {
+				var userIds = {};
+				userIds[currentUserId] = true;
+				var room = this.rooms.add({timestamp:(new Date()).getTime(), name: name, ownerId: currentUserId, userIds: userIds }, {
 					success:function(){
 						self.$("#room-name").val("")
 						b.removeAttr("disabled").removeClass("loading");
@@ -100,7 +102,7 @@ define(function(require, exports, module) {
 					error:function(){
 						b.removeAttr("disabled").removeClass("loading");
 					}
-				})
+				});
 			}
 		}
 	});
