@@ -55,7 +55,7 @@ define(function(require, exports, module) {
 			return {
 				ownerId:0,
 				drawings:{},
-				currentUserId : 0,
+				currentUserId : "",
 				status : "open", //open, close
 				timestamp : 0,
 				updateTime : 0
