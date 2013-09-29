@@ -123,8 +123,9 @@
 	<span><label>房间：</label><label id='room-name'><%=room.name%></label></span>
 	<label>创建人：</label><label id='owner-name'><%=owner.name%></label>
 	<span><button type="button" class='btn btn-default' id='join-room'>加入</button><button type="button" class='btn btn-default' id='leave-room'>离开</button><button type="button" class='btn btn-danger' id='close-room'>关闭房间</button><button type="button" class='btn btn-default' id='to-lobby'>返回大厅</button></span>
-	<label>玩家列表</label>
-	<div id='setting'>
+
+	<p id='setting'>
+		<label>规则：</label>
 		<span><label>接力达几人后结束：</label>
 		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
 			<option value="4">4人</option>
@@ -148,24 +149,21 @@
 			<option value="0">无限制</option>
 		</select>
 		</button></span>
-	</div>
+	</p>
 	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
 	
-	<p>
-		<label>玩家</label>
-		<div id='user-list'></div>
-	</p>
-
 	<p>
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class="active"><a href="#game-list" data-toggle="tab">可接力的游戏</a></li>
 	  <li><a href="#my-game-list" data-toggle="tab">我在接力的游戏</a></li>	  
 	  <li><a href="#completed-game-list" data-toggle="tab">已完成的游戏</a></li>
+	  <li><a href="#user-list" data-toggle="tab">玩家</a></li>
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane active fade " id="my-game-list"></div>
 		<div class="tab-pane fade " id="game-list"></div>
+		<div class="tab-pane active fade " id="my-game-list"></div>
 		<div class="tab-pane fade " id="completed-game-list"></div>
+		<div class="tab-pane fade " id='user-list'></div>
 	</div>
 	</p>
 </div>
