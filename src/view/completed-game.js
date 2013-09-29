@@ -92,7 +92,7 @@ define(function(require, exports, module) {
 			var self = this;
 			comments.add({
 				content: myComment,
-				userId : currentUser.get("id"),
+				userId : currentUserId,
 				timestamp : (new Date()).getTime()
 			}, {
 				success:function(){
