@@ -187,11 +187,15 @@
 
 <script type="template" id='game-item-template'>
 <div class='game-item' id='<%=id%>'>
-	<div>题目：<label class='game-title'></label></div>
+	<%if ( status=='close') {%>
+		<div>题目：<label class='game-title'></label></div>
+	<%}%>
 	<div><label class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于 <%=relative_time_text(timestamp)%></label></div>
 	<div>接力数：<label><%=_.size(drawings)-1%></label></div>
-	<div>现在状态：<label><%=(status=="open"?"进行中":"完成")%></label></div>
-	<div>吐槽值：<label class='total-comments'></label></div>
+	<div>状态：<label><%=(status=="open"?"进行中":"完成")%></label></div>
+	<%if ( status=='close') {%>
+		<div>吐槽值：<label class='total-comments'></label></div>
+	<%}%>
 <div>
 </script>
 

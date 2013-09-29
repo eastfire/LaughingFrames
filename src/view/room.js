@@ -16,16 +16,16 @@ define(function(require, exports, module) {
 
 		initialize:function(){
 			this.$el.html( this.template(this.model.toJSON()) );
-			var drawings = this.model.getDrawings();
-			if ( this.model.get("status")=='close' ) {				
+			if ( this.model.get("status")=='close' ) {
+				var drawings = this.model.getDrawings();
 				if ( drawings.length>0)
 					this.$(".game-title").html( drawings.at(0).get("word") );
-			}
-			var total = 0;
-			drawings.each(function(d){
-				total+=_.size(d.get("comments"));
-			});
-			this.$(".total-comments").html(total);
+				var total = 0;
+				drawings.each(function(d){
+					total+=_.size(d.get("comments"));
+				});
+				this.$(".total-comments").html(total);
+			}			
 		},
 		
 		onEnter:function(){
@@ -102,6 +102,9 @@ define(function(require, exports, module) {
 				this.$("#game-tabs li:first").hide();
 				this.$("#game-tabs li:nth-child(2)").hide();
 				$('#game-tabs li:nth-child(3) a').tab('show')
+			} else {
+				$('#game-tabs li:nth-child(2) a').tab('show')
+				$('#game-tabs li:nth-child(1) a').tab('show')
 			}
 		},
 		
