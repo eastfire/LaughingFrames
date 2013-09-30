@@ -185,8 +185,9 @@ define(function(require, exports, module) {
 		
 		onTouchStart: function(e){
 			var event = e.originalEvent;
-			var touch = event.originalEvent.changedTouches[0];
+			var touch = event.changedTouches[0];
 
+			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY );
 			var x = touch.screenX - this.canvas.position().left;
 			var y = touch.screenY - this.canvas.position().top;
 			
@@ -197,7 +198,8 @@ define(function(require, exports, module) {
 		
 		onTouchMove: function(e){
 			var event = e.originalEvent;
-			var touch = event.originalEvent.changedTouches[0];
+			var touch = event.changedTouches[0];
+			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY );
 
 			var x = touch.screenX - this.canvas.position().left;
 			var y = touch.screenY - this.canvas.position().top;
@@ -208,6 +210,7 @@ define(function(require, exports, module) {
 		
 		onTouchEnd: function(e){
 			var event = e.originalEvent;
+			$("#touch-debug").html( "touch end");
 			this.cxt.closePath();
 		},
 
