@@ -46,9 +46,7 @@ define(function(require, exports, module) {
 		},
 
 		backToRoom: function(){
-			this.options.room.refreshRoom();
-			$("#room").show();
-			this.remove();
+			history.back();
 		},
 		
 		toggleComments : function(event){

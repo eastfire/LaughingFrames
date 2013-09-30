@@ -12,22 +12,20 @@ define(function(require, exports, module) {
 		},
 
 		initialize:function(){
-			this.$el.html( this.template(this.model.toJSON()) );
-/*			$('#myTab a').click(function (e) {
-				e.preventDefault()
-				$(this).tab('show')
-			})
-*/
+			this.$el.html( this.template(this.model.toJSON()) );			
 		},
 		
 		onEnter:function(){
-			$("#lobby").hide();
+			/*$("#lobby").hide();
+			$("#room").empty();
 			var el = $("<div></div>").appendTo($("#room"));
 			var view = new RoomView({
 				model: this.model,
-				el: el,
-				lobby: this.options.lobby
-			});
+				el: el
+			});*/
+			history.pushState({status:"room",modelId:this.model.get("id")}, "房间："+this.model.get("name"),"?room="+this.model.get("id"));
+			Main.showRoom(this.model.get("id"));
+			history.go(1);
 		}
 	});
 
@@ -41,6 +39,7 @@ define(function(require, exports, module) {
 		initialize:function(){
 			this.initData();
 			this.initLayout();
+			this.$el.data("view",this);
 		},
 		
 		initData:function(){
