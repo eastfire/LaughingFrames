@@ -95,9 +95,9 @@ define(function(require, exports, module) {
 
 		enableCanvas:function(){
 			this.canvas.addClass("enabled");
-			this.canvas.bind('touchstart',this.onTouchStart);
-			this.canvas.bind('touchmove',this.onTouchMove);
-			this.canvas.bind('touchend',this.onTouchEnd);
+			this.canvas.bind('touchstart',{context:this}, this.onTouchStart);
+			this.canvas.bind('touchmove',{context:this}, this.onTouchMove);
+			this.canvas.bind('touchend',{context:this}, this.onTouchEnd);
 		},
 		
 		randomWord:function(){
@@ -184,12 +184,16 @@ define(function(require, exports, module) {
 		},
 		
 		onTouchStart: function(e){
+			$("#touch-debug").html( "touchstart" );
 			var event = e.originalEvent;
+			if ( event.changedTouches.length <= 0 )
+				return;
 			var touch = event.changedTouches[0];
+			e.preventDefault();
 
-			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY );
-			var x = touch.screenX - this.canvas.position().left;
-			var y = touch.screenY - this.canvas.position().top;
+			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY + " pageX:"+touch.pageX+" pageY:"+touch.pageY);
+			var x = touch.pageX - this.canvas.position().left;
+			var y = touch.pageY - this.canvas.position().top;
 			
 			this.cxt.beginPath();
 			this.cxt.moveTo(x,y);
@@ -197,20 +201,30 @@ define(function(require, exports, module) {
 		},
 		
 		onTouchMove: function(e){
+			$("#touch-debug").html( "touchmove" );				
 			var event = e.originalEvent;
-			var touch = event.changedTouches[0];
-			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY );
+			if ( event.changedTouches.length <= 0 )
+				return;
+			e.preventDefault();
 
-			var x = touch.screenX - this.canvas.position().left;
-			var y = touch.screenY - this.canvas.position().top;
+			var touch = event.changedTouches[0];
+			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY + " pageX:"+touch.pageX+" pageY:"+touch.pageY);
+
+			var x = touch.pageX - this.canvas.position().left;
+			var y = touch.pageY - this.canvas.position().top;
 
 			this.cxt.lineTo(x,y);
 			this.cxt.stroke();
 		},
 		
 		onTouchEnd: function(e){
-			var event = e.originalEvent;
 			$("#touch-debug").html( "touch end");
+
+			var event = e.originalEvent;
+			if ( event.changedTouches.length <= 0 )
+				return;
+			e.preventDefault();
+			
 			this.cxt.closePath();
 		},
 
