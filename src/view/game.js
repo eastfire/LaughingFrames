@@ -98,6 +98,7 @@ define(function(require, exports, module) {
 			var self = this;
 			this.canvas.hammer({prevent_default: true})
 				.bind('tap', function(e) { // And mousedown
+					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 					
@@ -107,6 +108,7 @@ define(function(require, exports, module) {
 					self.cxt.fill();
 				})
 				.bind('dragstart', function(e) { // And mousedown
+					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 					
@@ -115,6 +117,7 @@ define(function(require, exports, module) {
 					self.cxt.stroke();
 				})
 				.bind('drag', function(e) { // And mousemove when mousedown
+					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 
