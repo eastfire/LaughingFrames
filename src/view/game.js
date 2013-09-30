@@ -39,7 +39,10 @@ define(function(require, exports, module) {
 			"mousemove #drawing-canvas.enabled":"onDraw",
 			"mouseup #drawing-canvas.enabled":"onDraw",
 			"click #ok-guess":"onCompleteGuess",
-			"click #back-to-room":"backToRoom"
+			"click #back-to-room":"backToRoom",
+			"touchstart #drawing-canvas.enabled":"onTouchStart",
+			"touchmove #drawing-canvas.enabled":"onTouchMove",
+			"touchend #drawing-canvas.enabled":"onTouchEnd",
 		},
 
 		initialize:function(){
@@ -176,6 +179,34 @@ define(function(require, exports, module) {
 				} );
 		},
 		
+		onTouchStart: function(e){
+			var event = e.originalEvent;
+			var touch = event.originalEvent.changedTouches[0];
+
+			var x = touch.screenX - this.canvas.position().left;
+			var y = touch.screenY - this.canvas.position().top;
+			
+			this.cxt.beginPath();
+			this.cxt.moveTo(x,y);
+			this.cxt.stroke();
+		},
+		
+		onTouchMove: function(e){
+			var event = e.originalEvent;
+			var touch = event.originalEvent.changedTouches[0];
+
+			var x = touch.screenX - this.canvas.position().left;
+			var y = touch.screenY - this.canvas.position().top;
+
+			this.cxt.lineTo(x,y);
+			this.cxt.stroke();
+		},
+		
+		onTouchEnd: function(e){
+			var event = e.originalEvent;
+			this.cxt.closePath();
+		},
+
 		onDraw:function(e){			
 			var event = e.originalEvent;
 			if ( e.type == "mouseup" ){
