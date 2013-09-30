@@ -32,6 +32,7 @@ define(function(require, exports, module) {
 			"click #pen3": "onAdjustPen",
 			"click #pen5": "onAdjustPen",
 			"click #rubber5": "onSelectRubber",
+			"click #clear-all": "onClearAll",
 			"click #ok-draw":"onCompleteDraw",
 			"click #ok-guess":"onCompleteGuess",
 			"mousedown #drawing-canvas.enabled":"onDraw",
@@ -179,25 +180,35 @@ define(function(require, exports, module) {
 			var event = e.originalEvent;
 			if ( e.type == "mouseup" ){
 				this.cxt.closePath();
+				this.mouseDown = false;
 				return;
 			}
-			if ( !(event.buttons & 1) )
-				return;
+			
 			var x = event.pageX - this.canvas.position().left;
 			var y = event.pageY - this.canvas.position().top;
+			if ( e.type == "mousedown" )
+				this.mouseDown = true;
+
 			if ( this.mode == "pen" ) {
-				if ( e.type == "mousedown" ){
+				if ( e.type == "mousedown" ){					
 					this.cxt.beginPath();
 					this.cxt.moveTo(x,y);
+					this.cxt.stroke();
 				} else if ( e.type == "mousemove" ){
-					this.cxt.lineTo(x,y);
+					if ( this.mouseDown ) {
+						this.cxt.lineTo(x,y);
+						this.cxt.stroke();
+					}
 				}
-				this.cxt.stroke();
 				
-//				this.cxt.stroke();
 			} else if ( this.mode == "rubber" ) {
-				this.cxt.clearRect(x-5,y-5,11,11);
+				if ( this.mouseDown )
+					this.cxt.clearRect(x-10,y-10,21,21);
 			}
 		},
+
+		onClearAll:function(e){
+			this.cxt.clearRect(0,0,500,500);
+		}
 	});
 });
