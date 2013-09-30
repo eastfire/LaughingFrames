@@ -48,6 +48,7 @@ define(function(require, exports, module) {
 			var id = this.model.get("ownerId");
 			var owner = window.users.get(id);
 			this.$el.html( this.template({room:this.model.toJSON(), owner: owner.toJSON() }) );
+			this.$el.data("view",this);
 			this.$("#user-limit").prop("selectedIndex", this.$("#user-limit option[value="+this.model.get("userLimit")+"]").index() );
 			this.$("#time-limit").prop("selectedIndex", this.$("#time-limit option[value="+this.model.get("timeLimit")+"]").index() );
 			var isVisitor = false;
@@ -67,6 +68,7 @@ define(function(require, exports, module) {
 				this.$("#close-room").hide();
 				this.$("#user-limit").attr("disabled","disabled");
 				this.$("#time-limit").attr("disabled","disabled");
+				this.$("#create-game").hide();
 				isVisitor = true;
 			}
 
@@ -193,7 +195,7 @@ define(function(require, exports, module) {
 				return currentUserId;
 			}, function(error, committed, snapshot) {
 				if ( committed ){
-					$("#room").hide();
+					/*$("#room").hide();
 					var el = $("<div>");
 					$("#game").append(el);
 					if ( game.get("status") == "open" ) {
@@ -208,7 +210,10 @@ define(function(require, exports, module) {
 							room: self,
 							el: el
 						});
-					}
+					}*/
+					history.pushState({status:"game",modelId:game.get("id")}, "游戏","?game="+game.get("id"));
+					Main.showGame(game.get("id"));
+					history.go(1);
 				} else {
 					console.log( "enterGame error:"+error + " , "+committed);
 				}				
@@ -216,14 +221,12 @@ define(function(require, exports, module) {
 
 		},
 
-		refreshRoom: function(){
+		refresh: function(){
 			this.onResetGames();
 		},
 
 		onBackToLobby:function(){
-			$("#lobby").show();
-			this.options.lobby.refresh();
-			this.remove();
+			history.back();
 		},
 
 		onAddGame:function(game){
