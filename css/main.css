@@ -74,16 +74,12 @@
 }
 
 #drawing-list {
-	width:650px;
-	margin:0 auto;
-	display:block;
+
 }
 
 .drawing{
 	border: 1px solid gray;
-	border-radius:10px;
-	padding:5px 5px 20px 5px;
-	position:relative;
+	border-radius:10px;	
 }
 
 .drawing img {
@@ -91,8 +87,6 @@
 }
 
 .drawing .user {
-	width:135px;
-	display:inline-block;
 }
 
 .drawing .word {
@@ -100,11 +94,6 @@
 }
 
 .comments {
-	position:absolute;
-	right:20px;
+
 }
 
-.comment-list {
-	margin-top:25px;
-	margin-left: 50px;
-}

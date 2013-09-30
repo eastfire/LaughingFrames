@@ -1,8 +1,11 @@
 define(function(require, exports, module) {
 	var comletedGameTemplate = $("#completed-game-template").html();
-
+	var wordTemplate = $("#word-template").html();
+	var picTemplate = $("#pic-template").html();
 	exports.CompletedGameView = Backbone.View.extend({
 		template: _.template(comletedGameTemplate),
+		templateWord : _.template(wordTemplate),
+		templatePic : _.template(picTemplate),
 
 		events: {
 			"click #back-to-room":"backToRoom",
@@ -22,18 +25,14 @@ define(function(require, exports, module) {
 			for ( var i = 0; i < this.drawings.length ; i++){
 				var drawing = this.drawings.at(i);
 				var word = drawing.get("word");
-				var el
-				if ( word ){
-					var el = $("<div class='drawing guessing' id='"+drawing.get("id")+"'><div><span class='user'></span><span class='word'><label>"+word+"<label></span></div><label class='comments'>吐槽("+_.size(drawing.get("comments"))+")</label><div class='comment-list' style='display:none'></div></div>");
-					this.drawingList.append(el);
-				} else {
-					var el = $("<div class='drawing' id='"+drawing.get("id")+"'><div><span class='user'></span><span><img src='"+drawing.get("pic")+"'/></span></div><label class='comments'>吐槽("+_.size(drawing.get("comments"))+")</label><div class='comment-list' style='display:none'></div></div>");
-					this.drawingList.append(el);
-				}
+				var el = $(this.templateWord(drawing.toJSON()));
+				this.drawingList.append(el);
+				
 				var user = users.get(drawing.get("ownerId"));
 				if ( user ) {
 					el.find(".user").append("<div><label>"+user.get("name")+"<label><label>：</label></div><div>"+relative_time_text(drawing.get("timestamp"))+"</div>");
 				}
+				el.find(".comment-count").html(_.size(drawing.get("comments") ) );
 			}
 		},
 		
@@ -51,9 +50,10 @@ define(function(require, exports, module) {
 		
 		toggleComments : function(event){
 			var target = $(event.currentTarget);
-			var id = target.parents(".drawing").attr("id");
+			var drawingEl = target.parents(".drawing");
+			var id = drawingEl.attr("id");
 			var drawing = this.drawings.get(id);
-			var commentList = target.siblings(".comment-list");
+			var commentList = drawingEl.find(".comment-list");
 			if ( commentList.css("display") == "none" ){
 				this.renderComments(drawing, commentList);
 			}
@@ -62,6 +62,7 @@ define(function(require, exports, module) {
 
 		renderComments : function(drawing, el){
 			el.empty();
+			el.parents(".drawing").find(".comment-count").html(_.size(drawing.get("comments") ) );
 			el.append("<div class='input-group'><input class='form-control my-comment' placeholder='我要吐槽'/><span class='input-group-btn'><button class='btn btn-default submit-comment'>发表</button></span></div>");
 			var list = $("<div class='real-comment-list'><div>");
 
