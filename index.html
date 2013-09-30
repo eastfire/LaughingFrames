@@ -33,7 +33,8 @@
   <!-- Add your site or application content here -->
 
   <script src="src/libs/jquery-2.0.3.min.js"></script>
-  <!--script src="src/libs/jquery.ui.touch-punch.min.js"></script-->
+  <script src="src/libs/hammer.min.js"></script>
+  <script src="src/libs/jquery.hammer.min.js"></script>
   <script src="src/libs/underscore-1.3.4.min.js"></script>
   <script src="src/libs/backbone-min.js"></script>
   <script src="src/libs/bootstrap.min.js"></script>
@@ -210,7 +211,6 @@
 	</div>
 	<div style='margin:0 auto;width:500px;height:500px;display:block'>
 		<canvas id='drawing-canvas' width='500' height='500' style='display:block;border:1px solid black;'/>
-		<div id='touch-debug'></div>
 		<div id='canvas-bar' style='display:none'>
 			<div id='tools' class="btn-group" data-toggle="buttons">
 			  <label class="btn btn-primary" id="pen1" pen="1">

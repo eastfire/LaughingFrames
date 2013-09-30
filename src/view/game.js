@@ -35,9 +35,9 @@ define(function(require, exports, module) {
 			"click #clear-all": "onClearAll",
 			"click #ok-draw":"onCompleteDraw",
 			"click #ok-guess":"onCompleteGuess",
-			"mousedown #drawing-canvas.enabled":"onDraw",
-			"mousemove #drawing-canvas.enabled":"onDraw",
-			"mouseup #drawing-canvas.enabled":"onDraw",
+			//"mousedown #drawing-canvas.enabled":"onDraw",
+			//"mousemove #drawing-canvas.enabled":"onDraw",
+			//"mouseup #drawing-canvas.enabled":"onDraw",
 			"click #ok-guess":"onCompleteGuess",
 			"click #back-to-room":"backToRoom"			
 		},
@@ -95,9 +95,35 @@ define(function(require, exports, module) {
 
 		enableCanvas:function(){
 			this.canvas.addClass("enabled");
-			this.canvas.bind('touchstart',{context:this}, this.onTouchStart);
-			this.canvas.bind('touchmove',{context:this}, this.onTouchMove);
-			this.canvas.bind('touchend',{context:this}, this.onTouchEnd);
+			var self = this;
+			this.canvas.hammer({prevent_default: true})
+				.bind('tap', function(e) { // And mousedown
+					var x = e.gesture.center.pageX - self.canvas.position().left;
+					var y = e.gesture.center.pageY - self.canvas.position().top;
+					
+					self.cxt.beginPath();
+					self.cxt.arc(x, y, self.cxt.lineWidth/1.5, 0, Math.PI*2, true); 
+					self.cxt.closePath();
+					self.cxt.fill();
+				})
+				.bind('dragstart', function(e) { // And mousedown
+					var x = e.gesture.center.pageX - self.canvas.position().left;
+					var y = e.gesture.center.pageY - self.canvas.position().top;
+					
+					self.cxt.beginPath();
+					self.cxt.moveTo(x,y);
+					self.cxt.stroke();
+				})
+				.bind('drag', function(e) { // And mousemove when mousedown
+					var x = e.gesture.center.pageX - self.canvas.position().left;
+					var y = e.gesture.center.pageY - self.canvas.position().top;
+
+					self.cxt.lineTo(x,y);
+					self.cxt.stroke();
+				})
+				.bind('dragend', function(e) { // And mouseup
+					self.cxt.closePath();
+				});
 		},
 		
 		randomWord:function(){
@@ -181,51 +207,6 @@ define(function(require, exports, module) {
 						b.removeAttr("disabled").removeClass("loading");
 					}
 				} );
-		},
-		
-		onTouchStart: function(e){
-			$("#touch-debug").html( "touchstart" );
-			var event = e.originalEvent;
-			if ( event.changedTouches.length <= 0 )
-				return;
-			var touch = event.changedTouches[0];
-			e.preventDefault();
-
-			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY + " pageX:"+touch.pageX+" pageY:"+touch.pageY);
-			var x = touch.pageX - this.canvas.position().left;
-			var y = touch.pageY - this.canvas.position().top;
-			
-			this.cxt.beginPath();
-			this.cxt.moveTo(x,y);
-			this.cxt.stroke();
-		},
-		
-		onTouchMove: function(e){
-			$("#touch-debug").html( "touchmove" );				
-			var event = e.originalEvent;
-			if ( event.changedTouches.length <= 0 )
-				return;
-			e.preventDefault();
-
-			var touch = event.changedTouches[0];
-			$("#touch-debug").html( "screenX:"+touch.screenX + " screenY:"+touch.screenY + " clientX:"+touch.clientX + " clientY:"+touch.clientY + " pageX:"+touch.pageX+" pageY:"+touch.pageY);
-
-			var x = touch.pageX - this.canvas.position().left;
-			var y = touch.pageY - this.canvas.position().top;
-
-			this.cxt.lineTo(x,y);
-			this.cxt.stroke();
-		},
-		
-		onTouchEnd: function(e){
-			$("#touch-debug").html( "touch end");
-
-			var event = e.originalEvent;
-			if ( event.changedTouches.length <= 0 )
-				return;
-			e.preventDefault();
-			
-			this.cxt.closePath();
 		},
 
 		onDraw:function(e){			
