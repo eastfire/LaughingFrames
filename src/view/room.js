@@ -68,6 +68,7 @@ define(function(require, exports, module) {
 				this.$("#close-room").hide();
 				this.$("#user-limit").attr("disabled","disabled");
 				this.$("#time-limit").attr("disabled","disabled");
+				this.$("#create-game").hide();
 				isVisitor = true;
 			}
 

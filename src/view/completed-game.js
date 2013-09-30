@@ -1,11 +1,9 @@
 define(function(require, exports, module) {
 	var comletedGameTemplate = $("#completed-game-template").html();
-	var wordTemplate = $("#word-template").html();
-	var picTemplate = $("#pic-template").html();
+	var drawingTemplate = $("#drawing-template").html();
 	exports.CompletedGameView = Backbone.View.extend({
 		template: _.template(comletedGameTemplate),
-		templateWord : _.template(wordTemplate),
-		templatePic : _.template(picTemplate),
+		drawingTemplate : _.template(drawingTemplate),
 
 		events: {
 			"click #back-to-room":"backToRoom",
@@ -25,7 +23,7 @@ define(function(require, exports, module) {
 			for ( var i = 0; i < this.drawings.length ; i++){
 				var drawing = this.drawings.at(i);
 				var word = drawing.get("word");
-				var el = $(this.templateWord(drawing.toJSON()));
+				var el = $(this.drawingTemplate(drawing.toJSON()));
 				this.drawingList.append(el);
 				
 				var user = users.get(drawing.get("ownerId"));

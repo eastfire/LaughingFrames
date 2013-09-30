@@ -179,6 +179,7 @@ define(function(require, exports, module) {
 			var event = e.originalEvent;
 			if ( e.type == "mouseup" ){
 				this.cxt.closePath();
+				return;
 			}
 			if ( !(event.buttons & 1) )
 				return;
