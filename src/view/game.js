@@ -39,10 +39,7 @@ define(function(require, exports, module) {
 			"mousemove #drawing-canvas.enabled":"onDraw",
 			"mouseup #drawing-canvas.enabled":"onDraw",
 			"click #ok-guess":"onCompleteGuess",
-			"click #back-to-room":"backToRoom",
-			"touchstart #drawing-canvas.enabled":"onTouchStart",
-			"touchmove #drawing-canvas.enabled":"onTouchMove",
-			"touchend #drawing-canvas.enabled":"onTouchEnd",
+			"click #back-to-room":"backToRoom"			
 		},
 
 		initialize:function(){
@@ -77,11 +74,11 @@ define(function(require, exports, module) {
 					this.$("#canvas-bar").show();
 					this.$("#tools").button();
 					
-					this.canvas.addClass("enabled");
-					
 					this.cxt.strokeStyle="#000000";
 					this.cxt.lineWidth = 3;
 					this.mode = "pen";
+
+					this.enableCanvas();
 				} else {
 					//guess
 					console.log("on show canvas");
@@ -94,6 +91,13 @@ define(function(require, exports, module) {
 				}
 			} else {
 			}
+		},
+
+		enableCanvas:function(){
+			this.canvas.addClass("enabled");
+			this.canvas.bind('touchstart',this.onTouchStart);
+			this.canvas.bind('touchmove',this.onTouchMove);
+			this.canvas.bind('touchend',this.onTouchEnd);
 		},
 		
 		randomWord:function(){
