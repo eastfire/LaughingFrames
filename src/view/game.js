@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 					this.drawings.add({
 						ownerId: currentUserId,
 						timestamp : this.model.get("timestamp"),
-						word: this.randomWord(),
+						word: "题目："+this.randomWord(),
 						question: true
 					});
 				}
@@ -77,6 +77,9 @@ define(function(require, exports, module) {
 					this.cxt.strokeStyle="#000000";
 					this.cxt.lineWidth = 3;
 					this.mode = "pen";
+					
+					this.canvas.height( this.canvas.width() );
+					this.ratio = 500/this.canvas.width();
 
 					this.enableCanvas();
 				} else {
@@ -97,8 +100,8 @@ define(function(require, exports, module) {
 			var self = this;
 			this.canvas.hammer({prevent_default: true})
 				.bind('tap', function(e) { // And mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 					
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-10,y-10,21,21);
@@ -110,8 +113,8 @@ define(function(require, exports, module) {
 					}
 				})
 				.bind('dragstart', function(e) { // And mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 					
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-10,y-10,21,21);
@@ -122,8 +125,8 @@ define(function(require, exports, module) {
 					}
 				})
 				.bind('drag', function(e) { // And mousemove when mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-7,y-7,15,15);
@@ -164,21 +167,25 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), pic: this.canvas[0].toDataURL() },
+
+			var status = "open"
+			var room = $("#room div").data("view").model;
+			var userLimit = room.get("userLimit");
+			if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
+				if ( self.drawings.length > 4 )	{
+					status = "close";
+				}
+			} else if ( self.drawings.length - 1 >= userLimit ){
+				status = "close";
+			}
+			var timestamp = (new Date()).getTime();
+			this.model.set({ currentUserId: "", status : status, updateTime: timestamp });			
+			this.drawings.create({ ownerId: currentUserId, timestamp: timestamp, pic: this.canvas[0].toDataURL() },
 				{ 
 					success: function(){
-						var status = "open"
-						var room = $("#room div").data("view").model;
-						var userLimit = room.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
-							if ( self.drawings.length > 4 )	{
-								status = "close";
-							}
-						} else if ( self.drawings.length - 1 >= userLimit ){
-							status = "close";
-						}
+						
 						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
+						
 						self.backToRoom();
 					},
 					error:function(){
@@ -201,21 +208,23 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), word: name },
+
+			var status = "open"
+			var room = $("#room div").data("view").model;
+			var userLimit = room.get("userLimit");
+			if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
+				if ( self.drawings.length > 4 )	{
+					status = "close";
+				}
+			} else if ( self.drawings.length - 1 >= userLimit ){
+				status = "close";
+			}
+			var timestamp = (new Date()).getTime();
+			self.model.set({ currentUserId: "", status : status, updateTime: timestamp });
+			this.drawings.create({ ownerId: currentUserId, timestamp: timestamp, word: "我猜是“"+name+"”" },
 				{ 
-					success: function(){
-						var status = "open"
-						var room = $("#room div").data("view").model;
-						var userLimit = room.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
-							if ( self.drawings.length > 4 )	{
-								status = "close";
-							}
-						} else if ( self.drawings.length - 1 >= userLimit ){
-							status = "close";
-						}
-						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
+					success: function(){						
+						b.removeAttr("disabled").removeClass("loading");						
 						self.backToRoom();
 					},
 					error:function(){

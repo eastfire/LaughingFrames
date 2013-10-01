@@ -18,11 +18,20 @@ define(function(require, exports, module) {
 	exports.showLobby = function(){
 		$("#lobby").show();
 		$("#lobby").data("view").refresh();
-		$("#room").hide().empty();
-		$("#game").hide().empty();
+		$("#room").hide();
+		$("#game").hide();
 	}
 
 	exports.showRoom = function(modelId){
+		var r = $("#room div").data("view");
+		if ( r ){
+			if ( r.model.get("id") == modelId ){
+				$("#lobby").hide();
+				$("#room").show();
+				$("#game").hide();
+				return;
+			}
+		}
 		$("#lobby").hide();
 		$("#room").show().empty();
 		$("#game").hide().empty();
@@ -35,6 +44,15 @@ define(function(require, exports, module) {
 	}
 
 	exports.showGame = function(modelId){
+		var g = $("#game div").data("view")
+		if ( g ){
+			if ( g.model.get("id") == modelId ){
+				$("#lobby").hide();
+				$("#room").hide();
+				$("#game").show();
+				return;
+			}
+		}
 		$("#room").hide();
 		$("#lobby").hide();
 		$("#game").show().empty();
