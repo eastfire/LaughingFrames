@@ -12,7 +12,8 @@ define(function(require, exports, module) {
 		},
 
 		initialize:function(){
-			this.$el.html( this.template(this.model.toJSON()) );			
+			this.$el.html( this.template(this.model.toJSON()) );
+			this.$el.addClass("room-item col-sm-3");
 		},
 		
 		onEnter:function(){

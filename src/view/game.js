@@ -77,6 +77,9 @@ define(function(require, exports, module) {
 					this.cxt.strokeStyle="#000000";
 					this.cxt.lineWidth = 3;
 					this.mode = "pen";
+					
+					this.canvas.height( this.canvas.width() );
+					this.ratio = 500/this.canvas.width();
 
 					this.enableCanvas();
 				} else {
@@ -97,8 +100,8 @@ define(function(require, exports, module) {
 			var self = this;
 			this.canvas.hammer({prevent_default: true})
 				.bind('tap', function(e) { // And mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 					
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-10,y-10,21,21);
@@ -110,8 +113,8 @@ define(function(require, exports, module) {
 					}
 				})
 				.bind('dragstart', function(e) { // And mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 					
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-10,y-10,21,21);
@@ -122,8 +125,8 @@ define(function(require, exports, module) {
 					}
 				})
 				.bind('drag', function(e) { // And mousemove when mousedown
-					var x = e.gesture.center.pageX - self.canvas.position().left;
-					var y = e.gesture.center.pageY - self.canvas.position().top;
+					var x = (e.gesture.center.pageX - self.canvas.position().left)*self.ratio;
+					var y = (e.gesture.center.pageY - self.canvas.position().top)*self.ratio;
 
 					if ( self.mode === "rubber" ){
 						self.cxt.clearRect(x-7,y-7,15,15);

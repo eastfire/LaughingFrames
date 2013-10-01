@@ -11,22 +11,15 @@
 	width:500px;
 	height:500px;
 	border:1px solid black;
+	max-width:100%;
 }
 
 .room-item {
-	border: 1px solid black;
-	border-radius: 5px;
-	padding:10px;
-	float: left;
-    width: 250px;
+
 }
 
 .game-item {
-	border: 1px solid black;
-	border-radius: 5px;
-	padding:10px;
-	float:left;
-	width:230px;
+
 }
 
 #canvas-bar {
@@ -37,8 +30,7 @@
 }
 
 #ok-draw {
-	position:absolute;
-	right:0;
+	margin-left: 115px;
 }
 
 #drawing-name , #drawing-title {
@@ -62,13 +54,15 @@
 }
 
 #drawing-to-guess {
-	border:1px solid black;
-	width:500px;
-	height:500px;
+
 }
+
+#drawing-to-guess img{
+	max-width:100%;
+	border: 1px solid #000000;
+}
+
 #drawing-guess {
-	margin:10px auto;
-	width:500px
 }
 
 #drawing-list {
@@ -82,6 +76,7 @@
 
 .drawing img {
 	border: 1px solid lightgray;
+	max-width: 100%;
 }
 
 .drawing .user {

@@ -16,6 +16,7 @@ define(function(require, exports, module) {
 
 		initialize:function(){
 			this.$el.html( this.template(this.model.toJSON()) );
+			this.$el.addClass("col-sm-3 game-item").attr("id", this.model.get("id") );
 			if ( this.model.get("status")=='close' ) {
 				var drawings = this.model.getDrawings();
 				if ( drawings.length>0)
