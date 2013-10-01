@@ -168,57 +168,53 @@ define(function(require, exports, module) {
 		},
 		
 		enterGame: function(game){
-			if ( game.get("status") == "open" && !this.model.hasUser(currentUserId) ){
-				return;
-			}
-			if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
-				var el = this.$("#"+game.get("id"));
-				el.popover({
-					content: "请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
-				}).popover("show");
-				setTimeout(function(){
-					el.popover("hide");
-				},3000);
-				return;
-			}
-			var self = this;
-			game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
-				if ( id != "" ){
-					console.log(" 1 return id:"+id);
-					return id
+			if ( game.get("status") === "open" ) {
+				if ( !this.model.hasUser(currentUserId) ) { //only user in group can join game
+					return;
 				}
-				if ( game.hasUser(currentUserId) ){
-					console.log(" 2 return id:"+id);
-					return id;
+				if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
+					var el = this.$("#"+game.get("id"));
+					el.popover({
+						content: "请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
+					}).popover("show");
+					setTimeout(function(){
+						el.popover("hide");
+					},3000);
+					return;
 				}
-				console.log("3 return id:"+currentUserId);
-				return currentUserId;
-			}, function(error, committed, snapshot) {
-				if ( committed ){
-					/*$("#room").hide();
-					var el = $("<div>");
-					$("#game").append(el);
-					if ( game.get("status") == "open" ) {
-						var view = new GameView({
-							model: game,
-							room: self,
-							el: el
-						});
-					} else {
-						var view = new CompletedGameView({
-							model: game,
-							room: self,
-							el: el
-						});
-					}*/
-					history.pushState({status:"game",modelId:game.get("id")}, "游戏","?game="+game.get("id"));
-					Main.showGame(game.get("id"));
-					history.go(1);
+				var self = this;
+				if ( game.get("currentUserId") === currentUserId ) {
+					this.realEnterGame(game);
 				} else {
-					console.log( "enterGame error:"+error + " , "+committed);
-				}				
-			});
+					game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
+						console.log("old id:"+id);
+						if ( id === "" ){
+							return currentUserId;
+						}
+						return;
+					}, function(error, committed, snapshot) {
+						if ( error ){
+							console.log('Transaction failed abnormally!', error);
+							//try again
+							setTimeout(function(){
+								console.log("try again");
+								self.enterGame(game);
+							},100);
+						} else if ( !committed ){
+							console.log('We aborted the transaction (because other player is occupy).');
+						} else
+							self.realEnterGame(game);
+					});
+				}
+			} else if ( game.get("status") === "close" ){
+				this.realEnterGame(game);
+			}	
+		},
 
+		realEnterGame: function(game){
+			history.pushState({status:"game",modelId:game.get("id")}, "游戏","?game="+game.get("id"));
+			Main.showGame(game.get("id"));
+			history.go(1);
 		},
 
 		refresh: function(){
@@ -240,7 +236,7 @@ define(function(require, exports, module) {
 					if ( _.size(game.get("drawings")) ==0 ){
 						this.enterGame( game );
 					}
-				} else if ( game.get("currentUserId") == 0 && !game.hasUser(currentUserId) ){
+				} else if ( game.get("currentUserId") == "" && !game.hasUser(currentUserId) ){
 					var view = new GameItemView({model:game, roomView:this});
 					this.$("#game-list").prepend(view.render().$el);
 				}
