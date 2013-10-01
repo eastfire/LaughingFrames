@@ -12,17 +12,17 @@ rtlang['en'][' years'] = ' years';
 rtlang['en'][' ago'] = ' ago';
 
 
-rtlang['zh_CN']['less than a minute'] = '小于一分钟';
-rtlang['zh_CN'][' minutes'] = ' 分钟';
-rtlang['zh_CN']['about 1 hour'] = '大约 1 小时';
-rtlang['zh_CN'][' hour'] = ' 小时';
-rtlang['zh_CN']['1 day'] = '1 天';
-rtlang['zh_CN'][' days'] = ' 天';
-rtlang['zh_CN']['about 1 month'] = '大约 1 个月';
-rtlang['zh_CN'][' months'] = ' 个月';
-rtlang['zh_CN']['about 1 year'] = '大约 1 年';
-rtlang['zh_CN'][' years'] = ' 年';
-rtlang['zh_CN'][' ago'] = ' 前';
+rtlang['zh_CN']['less than a minute'] = '小于1分钟';
+rtlang['zh_CN'][' minutes'] = '分钟';
+rtlang['zh_CN']['about 1 hour'] = '大约1小时';
+rtlang['zh_CN'][' hour'] = '小时';
+rtlang['zh_CN']['1 day'] = '1天';
+rtlang['zh_CN'][' days'] = '天';
+rtlang['zh_CN']['about 1 month'] = '大约1个月';
+rtlang['zh_CN'][' months'] = '个月';
+rtlang['zh_CN']['about 1 year'] = '大约1年';
+rtlang['zh_CN'][' years'] = '年';
+rtlang['zh_CN'][' ago'] = '前';
 
 function relative_time_text(timestamp, local){
 	var now = (new Date()).getTime();

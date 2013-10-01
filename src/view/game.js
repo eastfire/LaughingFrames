@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 					this.drawings.add({
 						ownerId: currentUserId,
 						timestamp : this.model.get("timestamp"),
-						word: this.randomWord(),
+						word: "题目："+this.randomWord(),
 						question: true
 					});
 				}
@@ -167,21 +167,25 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), pic: this.canvas[0].toDataURL() },
+
+			var status = "open"
+			var room = $("#room div").data("view").model;
+			var userLimit = room.get("userLimit");
+			if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
+				if ( self.drawings.length > 4 )	{
+					status = "close";
+				}
+			} else if ( self.drawings.length - 1 >= userLimit ){
+				status = "close";
+			}
+			var timestamp = (new Date()).getTime();
+			this.model.set({ currentUserId: "", status : status, updateTime: timestamp });			
+			this.drawings.create({ ownerId: currentUserId, timestamp: timestamp, pic: this.canvas[0].toDataURL() },
 				{ 
 					success: function(){
-						var status = "open"
-						var room = $("#room div").data("view").model;
-						var userLimit = room.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
-							if ( self.drawings.length > 4 )	{
-								status = "close";
-							}
-						} else if ( self.drawings.length - 1 >= userLimit ){
-							status = "close";
-						}
+						
 						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
+						
 						self.backToRoom();
 					},
 					error:function(){
@@ -204,21 +208,23 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			b.attr("disabled","disabled").addClass("loading");
 			var self = this;
-			this.drawings.create({ ownerId: currentUserId, timestamp: (new Date()).getTime(), word: name },
+
+			var status = "open"
+			var room = $("#room div").data("view").model;
+			var userLimit = room.get("userLimit");
+			if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
+				if ( self.drawings.length > 4 )	{
+					status = "close";
+				}
+			} else if ( self.drawings.length - 1 >= userLimit ){
+				status = "close";
+			}
+			var timestamp = (new Date()).getTime();
+			self.model.set({ currentUserId: "", status : status, updateTime: timestamp });
+			this.drawings.create({ ownerId: currentUserId, timestamp: timestamp, word: "我猜是“"+name+"”" },
 				{ 
-					success: function(){
-						var status = "open"
-						var room = $("#room div").data("view").model;
-						var userLimit = room.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
-							if ( self.drawings.length > 4 )	{
-								status = "close";
-							}
-						} else if ( self.drawings.length - 1 >= userLimit ){
-							status = "close";
-						}
-						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
+					success: function(){						
+						b.removeAttr("disabled").removeClass("loading");						
 						self.backToRoom();
 					},
 					error:function(){

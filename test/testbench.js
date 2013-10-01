@@ -25,6 +25,8 @@ define(function(require, exports, module) {
 							});
 							window.currentUser = window.users.get(name);
 							window.currentUserId = currentUser.get("id");
+							history.pushState({status:"lobby"}, "大厅","?lobby");
+							history.go(1);
 						},
 						error:function(){
 						}

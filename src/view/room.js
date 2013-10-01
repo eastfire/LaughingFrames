@@ -15,8 +15,19 @@ define(function(require, exports, module) {
 		},
 
 		initialize:function(){
-			this.$el.html( this.template(this.model.toJSON()) );
+			this.room = this.options.roomView;
+			
 			this.$el.addClass("col-sm-3 game-item").attr("id", this.model.get("id") );
+			
+			this.model.on("change:currentUserId change:status", this.updateGameItem, this);
+			this.model.on("change", this.render, this);
+
+			this.updateGameItem();
+			this.$el.data("view",this);
+		},
+
+		render:function(){
+			this.$el.html( this.template(this.model.toJSON()) );
 			if ( this.model.get("status")=='close' ) {
 				var drawings = this.model.getDrawings();
 				if ( drawings.length>0)
@@ -26,11 +37,26 @@ define(function(require, exports, module) {
 					total+=_.size(d.get("comments"));
 				});
 				this.$(".total-comments").html(total);
-			}			
+			}
 		},
 		
 		onEnter:function(){
-			this.options.roomView.enterGame(this.model);
+			this.room.enterGame(this.model);
+		},
+		
+		updateGameItem: function(){
+			console.log("on update gameItem: "+this.model.get("status")+" , "+this.model.get("currentUserId")+" , "+this.model.hasUser(currentUserId));
+			if ( this.model.get("status") === 'open' ){
+				if ( this.model.get("currentUserId") === currentUserId )	{
+					this.room.$("#my-game-list").prepend(this.$el);
+				} else if ( this.model.get("currentUserId") === "" && !this.model.hasUser(currentUserId) ){
+					this.room.$("#game-list").prepend(this.$el);
+				} else {
+					this.$el.detach();
+				}
+			} else {
+				this.room.$("#completed-game-list").prepend(this.$el);
+			}
 		}
 	});
 
@@ -50,6 +76,9 @@ define(function(require, exports, module) {
 			var owner = window.users.get(id);
 			this.$el.html( this.template({room:this.model.toJSON(), owner: owner.toJSON() }) );
 			this.$el.data("view",this);
+			
+			this.views = {};
+
 			this.$("#user-limit").prop("selectedIndex", this.$("#user-limit option[value="+this.model.get("userLimit")+"]").index() );
 			this.$("#time-limit").prop("selectedIndex", this.$("#time-limit option[value="+this.model.get("timeLimit")+"]").index() );
 			var isVisitor = false;
@@ -78,7 +107,8 @@ define(function(require, exports, module) {
 
 			this.games = this.model.getGames();
 			this.games.on('add', this.onAddGame, this);
-			this.games.on('reset', this.onResetGames);
+			this.games.on('reset', this.onResetGames, this);
+			this.games.on("remove",this.onRemoveGame, this);
 			
 			this.userIds = this.model.collection.firebase.child(this.model.get("id")+"/userIds");
 			
@@ -106,8 +136,10 @@ define(function(require, exports, module) {
 				this.$("#game-tabs li:nth-child(2)").hide();
 				$('#game-tabs li:nth-child(3) a').tab('show')
 			} else {
-				$('#game-tabs li:nth-child(2) a').tab('show')
-				$('#game-tabs li:nth-child(1) a').tab('show')
+				if ( this.ownOpenCount )
+					$('#game-tabs li:nth-child(2) a').tab('show')
+				else
+					$('#game-tabs li:nth-child(1) a').tab('show')
 			}
 		},
 		
@@ -148,7 +180,7 @@ define(function(require, exports, module) {
 			var b = $(event.currentTarget);
 			if ( this.ownOpenCount >= CREATE_GAME_LIMIT ){
 				b.popover({
-					content: "由于资源有限，每个玩家创建且未完成的游戏只能有3个。请耐心等待其他玩家接力完成或接力其他玩家创建的游戏。",
+					content: "由于资源有限，每个玩家创建且未完成的游戏只能有"+CREATE_GAME_LIMIT+"个。请耐心等待其他玩家接力完成或接力其他玩家创建的游戏。",
 				}).popover("show");
 				setTimeout(function(){
 					b.popover("hide");
@@ -157,9 +189,10 @@ define(function(require, exports, module) {
 			}
 			
 			b.attr("disabled","disabled").addClass("loading");
+			$('#game-tabs li:nth-child(2) a').tab('show')
 
-			this.games.add({ownerId: currentUserId, timestamp: (new Date()).getTime(), currentUserId : currentUserId },{
-				success:function(){
+			this.games.create({ownerId: currentUserId, timestamp: (new Date()).getTime(), currentUserId : currentUserId },{
+				success:function(model){
 					b.removeAttr("disabled").removeClass("loading");
 				},
 				error:function(){
@@ -176,7 +209,7 @@ define(function(require, exports, module) {
 				if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
 					var el = this.$("#"+game.get("id"));
 					el.popover({
-						content: "请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
+						content: "您还有接力没完成，请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
 					}).popover("show");
 					setTimeout(function(){
 						el.popover("hide");
@@ -186,7 +219,10 @@ define(function(require, exports, module) {
 				var self = this;
 				if ( game.get("currentUserId") === currentUserId ) {
 					this.realEnterGame(game);
-				} else {
+				} else if ( game.get("currentUserId") === "") {
+					if ( game.hasUser(currentUserId) ){
+						return;
+					}
 					game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
 						console.log("old id:"+id);
 						if ( id === "" ){
@@ -219,7 +255,7 @@ define(function(require, exports, module) {
 		},
 
 		refresh: function(){
-			this.onResetGames();
+			//this.onResetGames();
 		},
 
 		onBackToLobby:function(){
@@ -227,27 +263,24 @@ define(function(require, exports, module) {
 		},
 
 		onAddGame:function(game){
-			if ( this.$("#"+game.get("id") ).length != 0)
-				this.$("#"+game.get("id") ).remove();
-			
-			if ( game.get("status") === 'open' ){
-				if ( game.get("currentUserId") == currentUserId )	{
-					var view = new GameItemView({model:game, roomView:this});
-					this.$("#my-game-list").prepend(view.render().$el);
-					if ( _.size(game.get("drawings")) ==0 ){
-						this.enterGame( game );
-					}
-				} else if ( game.get("currentUserId") == "" && !game.hasUser(currentUserId) ){
-					var view = new GameItemView({model:game, roomView:this});
-					this.$("#game-list").prepend(view.render().$el);
-				}
-			} else {
-				var view = new GameItemView({model:game, roomView:this});
-				this.$("#completed-game-list").prepend(view.render().$el);
+			console.log("on add game "+game.get("id"));
+			if ( this.views[game.get("id")] ){
+				return;
+			}
+			this.views[game.get("id")] = new GameItemView({model:game, roomView:this});
+			this.views[game.get("id")].render();
+		},
+		
+		onRemoveGame:function(game){
+			console.log("on remove game "+game.get("id"));
+			if ( this.views[game.get("id")] ){
+				this.views[game.get("id")].remove();
+				delete this.views[game.get("id")];
 			}
 		},
 		
 		onResetGames:function(){
+			console.log("on reset games");
 			this.$("#my-game-list").empty();
 			this.$("#game-list").empty();
 			this.$("#completed-game-list").empty();

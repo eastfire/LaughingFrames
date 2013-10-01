@@ -51,8 +51,6 @@ define(function(require, exports, module) {
 			this.rooms.on('add', this.onAddOneRoom, this);
 			this.rooms.on('reset', this.onAddAllRooms);
 			this.rooms.on('all', this.render);
-
-			this.$("#room-tabs li:first a").tab('show');
 		},
 
 		onAddOneRoom : function(room){
@@ -78,6 +76,7 @@ define(function(require, exports, module) {
 		initLayout:function(){
 			var self = this;
 			this.$el.html( this.template() );
+			this.$("#room-tabs li:first a").tab('show');
 		},
 		
 		refresh: function(){
