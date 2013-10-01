@@ -155,7 +155,7 @@
 			<option value="10">10人</option>
 			<option value="11">11人</option>
 			<option value="12">12人</option>
-			<option value="0">全员</option>
+			<option value="0">全员（至少4人）</option>
 		</select>
 		</span>
 		<span><label>画图时间限制：</label>
@@ -211,7 +211,6 @@
 	</div>
 	<div style='margin:0 auto;width:500px;height:500px;display:block'>
 		<canvas id='drawing-canvas' width='500' height='500' style='display:block;border:1px solid black;'/>
-		<div id='touch-debug'></div>
 		<div id='canvas-bar' style='display:none'>
 			<div id='tools' class="btn-group" data-toggle="buttons">
 			  <label class="btn btn-primary" id="pen1" pen="1">
@@ -266,7 +265,7 @@
 			<label class='comments col-sm-offset-10 col-xs-2'>吐槽<span class="badge comment-count"></span></label>
 		</div>
 		<div class='row'>
-			<div class='comment-list col-sm-offset-1' style='display:none'></div></div>
+			<div class='comment-list  col-sm-10 col-sm-offset-1' style='display:none'></div></div>
 		</div>
 	</div>
 </div>	

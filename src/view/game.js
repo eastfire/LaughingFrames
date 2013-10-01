@@ -81,7 +81,6 @@ define(function(require, exports, module) {
 					this.enableCanvas();
 				} else {
 					//guess
-					console.log("on show canvas");
 					var imgData = lastDrawing.get("pic");
 					var myImage = new Image();
 					myImage.src = imgData;
@@ -98,34 +97,45 @@ define(function(require, exports, module) {
 			var self = this;
 			this.canvas.hammer({prevent_default: true})
 				.bind('tap', function(e) { // And mousedown
-					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 					
-					self.cxt.beginPath();
-					self.cxt.arc(x, y, self.cxt.lineWidth/1.5, 0, Math.PI*2, true); 
-					self.cxt.closePath();
-					self.cxt.fill();
+					if ( self.mode === "rubber" ){
+						self.cxt.clearRect(x-10,y-10,21,21);
+					} else if ( self.mode === "pen" ){
+						self.cxt.beginPath();
+						self.cxt.arc(x, y, self.cxt.lineWidth/1.5, 0, Math.PI*2, true); 
+						self.cxt.closePath();
+						self.cxt.fill();
+					}
 				})
 				.bind('dragstart', function(e) { // And mousedown
-					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 					
-					self.cxt.beginPath();
-					self.cxt.moveTo(x,y);
-					self.cxt.stroke();
+					if ( self.mode === "rubber" ){
+						self.cxt.clearRect(x-10,y-10,21,21);
+					} else if ( self.mode === "pen" ){
+						self.cxt.beginPath();
+						self.cxt.moveTo(x,y);
+						self.cxt.stroke();
+					}
 				})
 				.bind('drag', function(e) { // And mousemove when mousedown
-					$("#touch-debug").html(e.gesture.center.pageX+","+e.gesture.center.pageY);
 					var x = e.gesture.center.pageX - self.canvas.position().left;
 					var y = e.gesture.center.pageY - self.canvas.position().top;
 
-					self.cxt.lineTo(x,y);
-					self.cxt.stroke();
+					if ( self.mode === "rubber" ){
+						self.cxt.clearRect(x-7,y-7,15,15);
+					} else if ( self.mode === "pen" ){
+						self.cxt.lineTo(x,y);
+						self.cxt.stroke();
+					}
 				})
 				.bind('dragend', function(e) { // And mouseup
-					self.cxt.closePath();
+					if ( self.mode === "pen" ){
+						self.cxt.closePath();
+					}
 				});
 		},
 		
@@ -158,8 +168,9 @@ define(function(require, exports, module) {
 				{ 
 					success: function(){
 						var status = "open"
-						var userLimit = self.options.room.model.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(self.options.room.model.get("userIds")) ) {
+						var room = $("#room div").data("view").model;
+						var userLimit = room.get("userLimit");
+						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
 							if ( self.drawings.length > 4 )	{
 								status = "close";
 							}
@@ -167,7 +178,7 @@ define(function(require, exports, module) {
 							status = "close";
 						}
 						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: 0, status : status, updateTime: (new Date()).getTime() });
+						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
 						self.backToRoom();
 					},
 					error:function(){
@@ -194,8 +205,9 @@ define(function(require, exports, module) {
 				{ 
 					success: function(){
 						var status = "open"
-						var userLimit = self.options.room.model.get("userLimit");
-						if ( userLimit == 0 && self.drawings.length - 1>= _.size(self.options.room.model.get("userIds")) ) {
+						var room = $("#room div").data("view").model;
+						var userLimit = room.get("userLimit");
+						if ( userLimit == 0 && self.drawings.length - 1>= _.size(room.get("userIds")) ) {
 							if ( self.drawings.length > 4 )	{
 								status = "close";
 							}
@@ -203,7 +215,7 @@ define(function(require, exports, module) {
 							status = "close";
 						}
 						b.removeAttr("disabled").removeClass("loading");
-						self.model.set({ currentUserId: 0, status : status, updateTime: (new Date()).getTime() });
+						self.model.set({ currentUserId: "", status : status, updateTime: (new Date()).getTime() });
 						self.backToRoom();
 					},
 					error:function(){
