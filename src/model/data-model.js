@@ -43,6 +43,13 @@ define(function(require, exports, module) {
 			if ( !this._games )
 				this._games = new exports.Games([],{firebase: this.collection.firebase.child("/"+this.get("id")+"/games")});
 			return this._games;
+		},
+
+		getUserLimit:function(){
+			if ( this.get("userLimit") == 0 ){
+				Math.max( _.size(this.get("userIds")), 4 );
+			} else
+				return this.get("userLimit");
 		}
 	})
 	

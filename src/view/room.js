@@ -102,9 +102,6 @@ define(function(require, exports, module) {
 				isVisitor = true;
 			}
 
-			this.ownOpenCount = 0;
-			this.activeOpenCount = 0;
-
 			this.games = this.model.getGames();
 			this.games.on('add', this.onAddGame, this);
 			this.games.on('reset', this.onResetGames, this);
@@ -114,16 +111,6 @@ define(function(require, exports, module) {
 			
 			this.renderUsers();
 			
-			this.games.each(function(game){
-				if ( game.get("status") === "open" ) {
-					if ( game.get("ownerId") === currentUserId )
-						this.ownOpenCount ++;
-					else if ( game.get("currentUserId") === currentUserId )
-						this.activeOpenCount ++;
-				}
-				
-			},this);
-
 			this.onResetGames();
 
 		/*	$('#myTab a').click(function (e) {
@@ -141,6 +128,21 @@ define(function(require, exports, module) {
 				else
 					$('#game-tabs li:nth-child(1) a').tab('show')
 			}
+		},
+		
+		calcCount : function(){
+			this.ownOpenCount = 0;
+			this.activeOpenCount = 0;
+
+			this.games.each(function(game){
+				if ( game.get("status") === "open" ) {
+					if ( game.get("ownerId") === currentUserId )
+						this.ownOpenCount ++;
+					else if ( game.get("currentUserId") === currentUserId )
+						this.activeOpenCount ++;
+				}
+				
+			},this);
 		},
 		
 		renderUsers : function(){
@@ -178,12 +180,14 @@ define(function(require, exports, module) {
 		onCreateGame: function(event){
 			var self = this;
 			var b = $(event.currentTarget);
+			this.calcCount();
 			if ( this.ownOpenCount >= CREATE_GAME_LIMIT ){
 				b.popover({
 					content: "由于资源有限，每个玩家创建且未完成的游戏只能有"+CREATE_GAME_LIMIT+"个。请耐心等待其他玩家接力完成或接力其他玩家创建的游戏。",
 				}).popover("show");
 				setTimeout(function(){
 					b.popover("hide");
+					b.popover("destroy");
 				},3000);
 				return;
 			}
@@ -194,6 +198,7 @@ define(function(require, exports, module) {
 			this.games.create({ownerId: currentUserId, timestamp: (new Date()).getTime(), currentUserId : currentUserId },{
 				success:function(model){
 					b.removeAttr("disabled").removeClass("loading");
+					self.enterGame(self.games.get(this.id));
 				},
 				error:function(){
 					b.removeAttr("disabled").removeClass("loading");
@@ -206,6 +211,7 @@ define(function(require, exports, module) {
 				if ( !this.model.hasUser(currentUserId) ) { //only user in group can join game
 					return;
 				}
+				this.calcCount();
 				if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
 					var el = this.$("#"+game.get("id"));
 					el.popover({
@@ -213,6 +219,7 @@ define(function(require, exports, module) {
 					}).popover("show");
 					setTimeout(function(){
 						el.popover("hide");
+						el.popover("destroy");
 					},3000);
 					return;
 				}
