@@ -113,17 +113,14 @@ define(function(require, exports, module) {
 			
 			this.onResetGames();
 
-		/*	$('#myTab a').click(function (e) {
-				e.preventDefault()
-				$(this).tab('show')
-			})
-*/
+			this.calcCount();
+
 			if ( isVisitor ){
 				this.$("#game-tabs li:first").hide();
 				this.$("#game-tabs li:nth-child(2)").hide();
 				$('#game-tabs li:nth-child(3) a').tab('show')
 			} else {
-				if ( this.ownOpenCount )
+				if ( this.activeOpenCount )
 					$('#game-tabs li:nth-child(2) a').tab('show')
 				else
 					$('#game-tabs li:nth-child(1) a').tab('show')
