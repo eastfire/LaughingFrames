@@ -28,7 +28,7 @@ define(function(require, exports, module) {
 			if ( r.model.get("id") == modelId ){
 				$("#lobby").hide();
 				$("#room").show();
-				$("#game").hide();
+				$("#game").hide().empty();
 				return;
 			}
 		}
