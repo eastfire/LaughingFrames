@@ -61,12 +61,17 @@ define(function(require, exports, module) {
 				this.ownCount++;
 			if ( room.hasUser(currentUserId) ){
 				this.$("#my-room-list").prepend(view.render().$el);
+				this.hasRoom = true;
+				this.$("#room-tabs li:nth-child(1) a").tab('show');
 			} else {
 				this.$("#room-list").prepend(view.render().$el);
+				if ( !this.hasRoom ){
+					this.$("#room-tabs li:nth-child(2) a").tab('show');
+				}
 			}
 		},
 		
-		onAddAllRooms : function(){			
+		onAddAllRooms : function(){
 			this.$("#room-list").empty();
 			this.$("#my-room-list").empty();
 
@@ -76,7 +81,8 @@ define(function(require, exports, module) {
 		initLayout:function(){
 			var self = this;
 			this.$el.html( this.template() );
-			this.$("#room-tabs li:first a").tab('show');
+
+			this.$("#room-tabs li:nth-child(1) a").tab('show');
 		},
 		
 		refresh: function(){
