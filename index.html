@@ -46,6 +46,8 @@
   <link href="css/main.css" rel='stylesheet'/>
 
   <script type="text/javascript">
+  var version = "20131002";
+
   if ( !console ) {
 	console = {
 		log : function(){}
@@ -54,7 +56,10 @@
 
   seajs.config({
 	  base: "./src/libs/",
-	  preload: ['seajs-text']
+	  preload: ['seajs-text'],
+	  'map': [
+		[ /^(.*\.(?:css|js))(.*)$/i, '$1?'+version ]
+	  ]
   })
 
   // 加载入口模块
