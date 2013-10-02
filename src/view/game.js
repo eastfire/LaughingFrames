@@ -156,7 +156,7 @@ define(function(require, exports, module) {
 			var status = "open"
 			var room = $("#room div").data("view").model;
 			
-			if ( self.drawings.length + 1 >= room.getUserLimit() ) {
+			if ( self.drawings.length >= room.getUserLimit() ) {
 					status = "close";
 			}
 			var timestamp = (new Date()).getTime();
@@ -194,7 +194,7 @@ define(function(require, exports, module) {
 
 			var status = "open"
 			var room = $("#room div").data("view").model;
-			if ( self.drawings.length + 1 >= room.getUserLimit() ) {
+			if ( self.drawings.length >= room.getUserLimit() ) {
 					status = "close";
 			}
 			var timestamp = (new Date()).getTime();
