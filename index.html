@@ -112,7 +112,7 @@
 		<ul class="nav nav-tabs" id='room-tabs'>
 		  <li><a href="#my-room-list" data-toggle="tab">我的房间</a></li>	  
 		  <li><a href="#room-list" data-toggle="tab">可加入</a></li>
-		  <li><a href="#closed-room-list" data-toggle="tab">已关闭</a></li>
+		  <li style='display:none'><a href="#closed-room-list" data-toggle="tab">已关闭</a></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane loading" id="my-room-list"></div>
@@ -146,8 +146,8 @@
 		<div class='col-sm-6'><h5 id='owner-name'><%=owner.name%>创建于<%=relative_time_text(room.timestamp)%></h5></div>
 	</div>
 
-	<div class='well-lg' id='setting'>
-		<div>规则：</div>
+	<div id='setting-toggle' class='glyphicon glyphicon-chevron-down' style='cursor:pointer'>规则：</div>
+	<div class='row' id='setting'>
 		<div class='col-sm-6'>
 		<label>接力达</label>
 		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
@@ -175,7 +175,7 @@
 		</select>
 		</div>
 	</div>
-	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
+	<div><button id='create-game' type="button" class='btn btn-primary'>创建游戏<span class='glyphicon glyphicon-play'></span></button></div>
 
 
 	<ul class="nav nav-tabs" id='game-tabs'>

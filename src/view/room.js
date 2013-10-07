@@ -70,6 +70,7 @@ define(function(require, exports, module) {
 			"change #time-limit":"onSetDrawingTime",
 			"click #to-lobby":"onBackToLobby",
 			"click #create-game":"onCreateGame",
+			"click #setting-toggle":"onSettingToggle"
 		},
 		initialize:function(){
 			var id = this.model.get("ownerId");
@@ -289,6 +290,11 @@ define(function(require, exports, module) {
 			this.$("#game-list").empty();
 			this.$("#completed-game-list").empty();
 			this.games.each( this.onAddGame, this);
+		},
+		
+		onSettingToggle:function(event){
+			$(event.currentTarget).toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+			$("#setting").toggle("blind");
 		}
 	});
 });
