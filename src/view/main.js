@@ -59,11 +59,18 @@ define(function(require, exports, module) {
 		var el = $("<div>");
 		$("#game").append(el);
 		var game = $("#room > div").data("view").games.get(modelId);
-		if ( game.get("status") == "open" ) {
-			var view = new GameView({
-				model: game,
-				el: el
-			});
+		if ( game.get("status") === "open" ) {
+			if ( game.get("currentUserId") !== currentUserId && game.hasUser(currentUserId) ) {
+				var view = new CompletedGameView({
+					model: game,
+					el: el
+				});
+			} else {
+				var view = new GameView({
+					model: game,
+					el: el
+				});
+			}
 		} else {
 			var view = new CompletedGameView({
 				model: game,
