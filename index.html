@@ -46,7 +46,7 @@
   <link href="css/main.css" rel='stylesheet'/>
 
   <script type="text/javascript">
-  var version = "20131002";
+  var version = "20131008";
 
   if ( !console ) {
 	console = {
@@ -112,7 +112,7 @@
 		<ul class="nav nav-tabs" id='room-tabs'>
 		  <li><a href="#my-room-list" data-toggle="tab">我的房间</a></li>	  
 		  <li><a href="#room-list" data-toggle="tab">可加入</a></li>
-		  <li><a href="#closed-room-list" data-toggle="tab">已关闭</a></li>
+		  <li style='display:none'><a href="#closed-room-list" data-toggle="tab">已关闭</a></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane loading" id="my-room-list"></div>
@@ -146,8 +146,8 @@
 		<div class='col-sm-6'><h5 id='owner-name'><%=owner.name%>创建于<%=relative_time_text(room.timestamp)%></h5></div>
 	</div>
 
-	<div class='well-lg' id='setting'>
-		<div>规则：</div>
+	<div id='setting-toggle' class='glyphicon glyphicon-chevron-down' style='cursor:pointer'>规则：</div>
+	<div class='row' id='setting'>
 		<div class='col-sm-6'>
 		<label>接力达</label>
 		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
@@ -175,12 +175,12 @@
 		</select>
 		</div>
 	</div>
-	<button id='create-game' type="button" class='btn btn-primary'>创建游戏</button>
+	<div><button id='create-game' type="button" class='btn btn-primary'>创建游戏<span class='glyphicon glyphicon-play'></span></button></div>
 
 
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class=""><a href="#game-list" data-toggle="tab">可接力</a></li>
-	  <li><a href="#my-game-list" data-toggle="tab">我在接力</a></li>	  
+	  <li><a href="#my-game-list" data-toggle="tab">我的游戏</a></li>	  
 	  <li><a href="#completed-game-list" data-toggle="tab">已完成</a></li>
 	  <li><a href="#user-list" data-toggle="tab">玩家</a></li>
 	</ul>
@@ -197,12 +197,18 @@
 <script type="template" id='game-item-template'>
 <div class='thumbnail'>
 	<%if ( status=='close') {%>
-		<div>题目：<label class='game-title'></label></div>
-	<%}%>
-	<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%>创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><label class='game-title'></label></div>
+		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 完成于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+	<%} else {%>
+		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 接力于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+	<% } %>
 	<div>接力数：<label><%=Math.max(_.size(drawings)-1,0)%></label></div>
-	<% if ( currentUserId !== "") {%>
+	<% if ( currentUserId !== "" && currentUserId != window.currentUserId ) {%>
 		<div>接力人：<label><%=currentUserId%></label></div>
+	<% } else if ( currentUserId !== "" && currentUserId === window.currentUserId ) { %>
+		<div><label class='label label-primary'>我在接力</label></div>
 	<% } %>
 	<%if ( status=='close') {%>
 		<div>吐槽值：<label class='total-comments'></label></div>
