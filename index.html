@@ -180,7 +180,7 @@
 
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class=""><a href="#game-list" data-toggle="tab">可接力</a></li>
-	  <li><a href="#my-game-list" data-toggle="tab">我在接力</a></li>	  
+	  <li><a href="#my-game-list" data-toggle="tab">我的游戏</a></li>	  
 	  <li><a href="#completed-game-list" data-toggle="tab">已完成</a></li>
 	  <li><a href="#user-list" data-toggle="tab">玩家</a></li>
 	</ul>
@@ -197,12 +197,18 @@
 <script type="template" id='game-item-template'>
 <div class='thumbnail'>
 	<%if ( status=='close') {%>
-		<div>题目：<label class='game-title'></label></div>
-	<%}%>
-	<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%>创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><label class='game-title'></label></div>
+		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 完成于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+	<%} else {%>
+		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 接力于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+	<% } %>
 	<div>接力数：<label><%=Math.max(_.size(drawings)-1,0)%></label></div>
-	<% if ( currentUserId !== "") {%>
+	<% if ( currentUserId !== "" && currentUserId != window.currentUserId ) {%>
 		<div>接力人：<label><%=currentUserId%></label></div>
+	<% } else if ( currentUserId !== "" && currentUserId === window.currentUserId ) { %>
+		<div><label class='label label-primary'>我在接力</label></div>
 	<% } %>
 	<%if ( status=='close') {%>
 		<div>吐槽值：<label class='total-comments'></label></div>

@@ -51,9 +51,10 @@ define(function(require, exports, module) {
 					this.room.$("#my-game-list").prepend(this.$el);
 				} else if ( this.model.get("currentUserId") === "" && !this.model.hasUser(currentUserId) ){
 					this.room.$("#game-list").prepend(this.$el);
-				} else {
+				} else if ( this.model.hasUser(currentUserId) ){
+					this.room.$("#my-game-list").prepend(this.$el);
+				} else
 					this.$el.detach();
-				}
 			} else {
 				this.room.$("#completed-game-list").prepend(this.$el);
 			}
@@ -210,7 +211,7 @@ define(function(require, exports, module) {
 					return;
 				}
 				this.calcCount();
-				if ( game.get("currentUserId") != currentUserId && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
+				if ( game.get("currentUserId") != currentUserId && !game.hasUser(currentUserId) && this.activeOpenCount >= ACTIVE_GAME_LIMIT ){
 					var el = this.$("#"+game.get("id"));
 					el.popover({
 						content: "您还有接力没完成，请到“我在接力的游戏”中完成您的接力，其他玩家正等着呢。",
@@ -225,7 +226,8 @@ define(function(require, exports, module) {
 				if ( game.get("currentUserId") === currentUserId ) {
 					this.realEnterGame(game);
 				} else if ( game.get("currentUserId") === "") {
-					if ( game.hasUser(currentUserId) ){
+					if ( game.hasUser(currentUserId) ){	
+						this.realEnterGame(game);
 						return;
 					}
 					game.collection.firebase.child(game.get("id")+"/currentUserId").transaction(function( id ) {
