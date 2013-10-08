@@ -142,14 +142,11 @@
 			<button type="button" class='btn btn-danger' id='close-room'>关闭房间</button>		
 		</div>
 	</div>
-	<div class='row'>
-		<div class='col-sm-6'><h5 id='owner-name'><%=owner.name%>创建于<%=relative_time_text(room.timestamp)%></h5></div>
-	</div>
-
+	
+	<% if (room.ownerId === currentUserId ){ %>
 	<div id='setting-toggle' class='glyphicon glyphicon-chevron-down' style='cursor:pointer'>规则：</div>
 	<div class='row' id='setting'>
 		<div class='col-sm-6'>
-		<label>接力达</label>
 		<select id='user-limit' class='form-control' style='display:inline; width:auto'>
 			<option value="4">4人</option>
 			<option value="5">5人</option>
@@ -162,7 +159,7 @@
 			<option value="12">12人</option>
 			<option value="0">全员</option>
 		</select>
-		<label>后结束</label>
+		<label>接力后游戏结束</label>
 		</div>
 		<div class='col-sm-6'>
 		<label>画图时间限制：</label>
@@ -171,12 +168,16 @@
 			<option value="60">60秒</option>
 			<option value="90">90秒</option>
 			<option value="120">120秒</option>
-			<option value="0">无限制</option>
+			<option value="0">无</option>
 		</select>
 		</div>
 	</div>
-	<div><button id='create-game' type="button" class='btn btn-primary'>创建游戏<span class='glyphicon glyphicon-play'></span></button></div>
+	<% } else { %>
+	<h5 class='label label-info'><%=(room.userLimit==0?"全员":(room.userLimit+"人"))%>接力后游戏结束</h5>
+	<h5 class='label label-info'>画图时间限制：<%=room.timeLimit==0?"无":(room.timeLimit+"秒")%></h5>
+	<% } %>
 
+	<div><button id='create-game' type="button" class='btn btn-primary'>创建游戏<span class='glyphicon glyphicon-play'></span></button></div>
 
 	<ul class="nav nav-tabs" id='game-tabs'>
 	  <li class=""><a href="#game-list" data-toggle="tab">可接力</a></li>
@@ -204,14 +205,14 @@
 		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
 		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 接力于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
 	<% } %>
-	<div>接力数：<label><%=Math.max(_.size(drawings)-1,0)%></label></div>
+	<div><h5 class='label label-info'>接力数：<%=Math.max(_.size(drawings)-1,0)%></h5></div>
 	<% if ( currentUserId !== "" && currentUserId != window.currentUserId ) {%>
 		<div>接力人：<label><%=currentUserId%></label></div>
 	<% } else if ( currentUserId !== "" && currentUserId === window.currentUserId ) { %>
-		<div><label class='label label-primary'>我在接力</label></div>
+		<div><label class='label label-warning'>我在接力</label></div>
 	<% } %>
 	<%if ( status=='close') {%>
-		<div>吐槽值：<label class='total-comments'></label></div>
+		<div><h5 class='label label-info'>吐槽值：<label class='total-comments'></label></h5></div>
 	<%}%>
 </div>
 </script>
