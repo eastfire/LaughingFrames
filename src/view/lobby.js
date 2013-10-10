@@ -24,7 +24,7 @@ define(function(require, exports, module) {
 				model: this.model,
 				el: el
 			});*/
-			history.pushState({status:"room",modelId:this.model.get("id")}, "房间："+this.model.get("name"),"?room="+this.model.get("id"));
+			history.pushState({status:"room",modelId:this.model.get("id")}, "聚会："+this.model.get("name"),"?room="+this.model.get("id"));
 			Main.showRoom(this.model.get("id"));
 			history.go(1);
 		}
@@ -92,7 +92,7 @@ define(function(require, exports, module) {
 		onCreate: function(event){
 			if ( this.ownCount >= USER_LIMIT_ROOM ) {
 				$(event.currentTarget).popover({
-					content:"由于资源有限，每个玩家只能创建"+USER_LIMIT_ROOM+"个房间"
+					content:"由于资源有限，每个玩家只能创建"+USER_LIMIT_ROOM+"个聚会"
 				});
 				$(event.currentTarget).popover("show");
 				setTimeout(function(){
