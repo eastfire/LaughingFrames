@@ -105,12 +105,12 @@
 <div>
 	<div class='row'>
 		<div class='input-group col-md-6'>
-			<input id='room-name' class='form-control' placeholder='房间名'/><span class='input-group-btn' id='create-room'><button class='btn btn-default'>新建房间</button></span>
+			<input id='room-name' class='form-control' placeholder='聚会名'/><span class='input-group-btn' id='create-room'><button class='btn btn-default'>新建聚会</button></span>
 		</div>
 	</div>
 	<p>
 		<ul class="nav nav-tabs" id='room-tabs'>
-		  <li><a href="#my-room-list" data-toggle="tab">我的房间</a></li>	  
+		  <li><a href="#my-room-list" data-toggle="tab">我的聚会</a></li>	  
 		  <li><a href="#room-list" data-toggle="tab">可加入</a></li>
 		  <li style='display:none'><a href="#closed-room-list" data-toggle="tab">已关闭</a></li>
 		</ul>
@@ -125,7 +125,7 @@
 
 <script type="template" id='room-item-template'>
 <div class='thumbnail'>
-	<div>房间：<label class='room-item-name'><%=name%></label></div>
+	<div>聚会：<label class='room-item-name'><%=name%></label></div>
 	<div><h5><%=users.get(ownerId).get("name")%>创建于<%=relative_time_text(timestamp)%></h5></div>
 	<div>游戏数：<label class='room-game-number'><%=_.size(games)%></label></div>
 	<div>玩家：<label class='room-user-number'><%=_.size(userIds)%></label>人</div>
@@ -136,10 +136,10 @@
 <div>
 	<div class='row'>
 		<div class='col-sm-2'><button type="button" class='btn btn-default' id='to-lobby'><span class='glyphicon glyphicon-chevron-left'></span>返回大厅</button></div>
-		<div class='col-sm-10'>房间：<label id='room-name'><%=room.name%></label>
+		<div class='col-sm-10'>聚会：<label id='room-name'><%=room.name%></label>
 			<button type="button" class='btn btn-primary' id='join-room'>加入</button>
 			<button type="button" class='btn btn-default' id='leave-room'>离开</button>
-			<button type="button" class='btn btn-danger' id='close-room'>关闭房间</button>		
+			<button type="button" class='btn btn-danger' id='close-room'>关闭聚会</button>		
 		</div>
 	</div>
 	
@@ -219,7 +219,7 @@
 
 <script type="template" id='game-template'>
 <div>
-	<button id='back-to-room' class='btn btn-default ' type='button'><span class='glyphicon glyphicon-chevron-left'></span>回到房间</button>
+	<button id='back-to-room' class='btn btn-default ' type='button'><span class='glyphicon glyphicon-chevron-left'></span>回到聚会</button>
 	<div style=''>
 		<span class='user'>
 		</span>：
@@ -259,7 +259,7 @@
 </script>
 
 <script type="template" id='completed-game-template'>
-<button id='back-to-room' class='btn btn-primary' type='button'><span class='glyphicon glyphicon-chevron-left'></span>回到房间</button>
+<button id='back-to-room' class='btn btn-primary' type='button'><span class='glyphicon glyphicon-chevron-left'></span>回到聚会</button>
 <div id='drawing-list' style=''>
 </div>
 </script>
