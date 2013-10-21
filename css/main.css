@@ -15,11 +15,11 @@
 }
 
 .room-item {
-
+	cursor:pointer;
 }
 
 .game-item {
-
+	cursor:pointer;
 }
 
 #canvas-bar {
