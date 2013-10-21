@@ -42,7 +42,7 @@
   <script src="src/libs/backbone-firebase.js"></script>
   <script src="src/libs/utils.js"></script>
   <script src="src/libs/sea.js"></script>
-
+  <script src="src/libs/seajs-text.js"></script>
   <link href="css/main.css" rel='stylesheet'/>
 
   <script type="text/javascript">
@@ -56,7 +56,6 @@
 
   seajs.config({
 	  base: "./src/libs/",
-	  preload: ['seajs-text'],
 	  'map': [
 		[ /^(.*\.(?:css|js))(.*)$/i, '$1?'+version ]
 	  ]
@@ -92,6 +91,7 @@
 			  <span class="input-group-addon glyphicon glyphicon-user"></span>
 			  <input type="text" class="form-control" placeholder="用户名" id='user-name'/>
 			</div>
+			<div>本系统没有用户系统，请任意输入昵称即可</div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" id='login'>登录</button>
