@@ -200,10 +200,14 @@
 	<%if ( status=='close') {%>
 		<div><label class='game-title'></label></div>
 		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<%if ( _.last(_.toArray(drawings)) != null ) { %>
 		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 完成于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+		<% } %>
 	<%} else {%>
 		<div><h5 class='game-create-time'><%=users.get(ownerId).get("name")%> 创建于<%=relative_time_text(timestamp)%></h5></div>
+		<%if ( _.last(_.toArray(drawings)) != null ) { %>
 		<div><h5 class='game-create-time'><%=users.get(_.last(_.toArray(drawings)).ownerId).get("name")%> 接力于<%=relative_time_text(_.last(_.toArray(drawings)).timestamp)%></h5></div>
+		<% } %>
 	<% } %>
 	<div><h5 class='label label-info'>接力数：<%=Math.max(_.size(drawings)-1,0)%></h5></div>
 	<% if ( currentUserId !== "" && currentUserId != window.currentUserId ) {%>
